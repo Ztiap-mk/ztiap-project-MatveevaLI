@@ -1,9 +1,5 @@
 var cvs;
 var ctx;
- 
-
-
-
 // Model
 
 var keys = {};
