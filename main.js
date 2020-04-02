@@ -9,6 +9,7 @@ const IMAGES = [
 
 var keys ={};
  
+
 class Pacman{
   // Initialization
   constructor() {
@@ -22,12 +23,12 @@ class Pacman{
 
   // Movement logic
   move(dt) {
-     const canvas = this.canvas;
-        
-    if (keys[37])  this.x = this.x - 0.5;
-    if (keys[39])  this.x = this.x + 0.5;
-    if (keys[38]) this.y = this.y - 0.5;
-    if (keys[40]) this.y = this.y + 0.5;
+     //const canvas = this.canvas;
+         
+    if (keys[37]){ this.x = this.x - 5}; 
+    if (keys[39]) { this.x = this.x + 5  };
+    if (keys[38]) {this.y = this.y - 5  };
+    if (keys[40]) {this.y = this.y + 5};
 
   }
 
@@ -141,7 +142,7 @@ window.onkeydown = function(event) {
     };
 window.onkeyup = function (event)
 {
-    keys[event.keyCode] = faulse;
+    keys[event.keyCode] = false;
 }    
 
 // celu logiku som zabalil do tejto class, riesi inicializaciu ball objektov + riesi rendering + nekonecny loop
