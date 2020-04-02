@@ -1,62 +1,40 @@
 const IMAGES = [
   {name: 'pacman', src: 'img/pacman.png'},
-  {name: 'duch', src: 'img/duch.png'},
+  {name: 'duch', src: 'img/red.png'},
   {name: 'cherry', src: 'img/cherry.png'},
   {name: 'fg', src: 'img/fg.png'},
   {name: 'bg', src: 'img/bg.png'},
   
 ];
 
-// toto je viac menej bez zmeny len som sa zbavil globalnych premennych
-// pridal ctx parameter do draw
-class Pacman
- {
+var keys ={};
+ 
+class Pacman{
   // Initialization
   constructor() {
-      this.canvas = document.getElementById("canvas");
-      this.image = resourceManager.getImageSource('pacman');
-  
-      this.x = Math.random() * canvas.width
-      this.y = Math.random() * canvas.height
-      this.dx = Math.random() * 50 - 25
-      this.dy = Math.random() * 50 - 25
-      this.size = Math.random() + .3
-      this.rotation = 0
-  }
+    this.canvas = document.getElementById("canvas");
+    this.image = resourceManager.getImageSource('pacman');
+    this.x = 150;
+    this.y = 250;
+    this.height = 20;
+    this.width = 20;
+    }
 
   // Movement logic
   move(dt) {
-      const canvas = this.canvas;
-      if (this.x > canvas.width) {
-          this.x = canvas.width
-          this.dx = -Math.abs(this.dx)
-      }
-      if (this.x < 0) {
-          this.x = 0
-          this.dx = Math.abs(this.dx)
-      }
-      if (this.y > canvas.height) {
-          this.y = canvas.height
-          this.dy = -Math.abs(this.dy)
-      }
-      if (this.y < 0) {
-          this.y = 0
-          this.dy = Math.abs(this.dy) * 0.95
-      }
-  
-      // Movement
-      this.x += this.dx * dt
-      this.y += 0 * dt
-      this.rotation +=dt/3
+     const canvas = this.canvas;
+        
+    if (keys[37])  this.x = this.x - 0.5;
+    if (keys[39])  this.x = this.x + 0.5;
+    if (keys[38]) this.y = this.y - 0.5;
+    if (keys[40]) this.y = this.y + 0.5;
+
   }
 
   // Render self
   draw(ctx) {
     ctx.save()
-    ctx.translate(this.x, this.y)
-   
-    ctx.scale(this.size, this.size)
-    ctx.drawImage(this.image, -20, -20, 40, 40)
+    ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
     ctx.restore()
   }
 }
@@ -64,54 +42,54 @@ class Pacman
 class Duch {
    // Initialization
    constructor() {
-    this.canvas = document.getElementById("canvas");
-    this.image = resourceManager.getImageSource('duch');
+        this.canvas = document.getElementById("canvas");
+        this.image = resourceManager.getImageSource('duch');
 
-    this.x = Math.random() * canvas.width
-    this.y = Math.random() * canvas.height
-    this.dx = Math.random() * 50 - 25
-    this.dy = Math.random() * 50 - 25
-    this.size = Math.random() + .3
-    this.rotation = 0
-}
+        this.x = Math.random() * canvas.width
+        this.y = Math.random() * canvas.height
+        this.dx = Math.random() * 50 - 25
+        this.dy = Math.random() * 50 - 25
+        this.size = Math.random() + .3
+        this.rotation = 0
+    }
 
 // Movement logic
-move(dt) {
-  const canvas = this.canvas;
-  if (this.x > canvas.width) {
-      this.x = canvas.width
-      this.dx = -Math.abs(this.dx)
-  }
-  if (this.x < 0) {
-      this.x = 0
-      this.dx = Math.abs(this.dx)
-  }
-  if (this.y > canvas.height) {
-      this.y = canvas.height
-      this.dy = -Math.abs(this.dy)
-  }
-  if (this.y < 0) {
-      this.y = 0
-      this.dy = Math.abs(this.dy) * 0.2
-  }
+    move(dt) {
+        const canvas = this.canvas;
+        if (this.x > canvas.width) {
+        this.x = canvas.width
+        this.dx = -Math.abs(this.dx)
+        }
+        if (this.x < 0) {
+            this.x = 0
+            this.dx = Math.abs(this.dx)
+        }
+        if (this.y > canvas.height) {
+            this.y = canvas.height
+            this.dy = -Math.abs(this.dy)
+        }
+        if (this.y < 0) {
+            this.y = 0
+            this.dy = Math.abs(this.dy) * 0.2
+        }
 
-  // Movement
-  this.x += this.dx * dt
-  this.y += 0 * dt
-  this.rotation +=dt/3
-}
-
-// Render self
-draw(ctx) {
-ctx.save()
-ctx.translate(80, 50)
+        // Movement
+        this.x += this.dx * dt
+        this.y += 0 * dt
+        this.rotation +=dt/3
  
-ctx.scale(this.size, this.size)
-ctx.drawImage(this.image, -30, -30, 80, 80)
-ctx.restore()
-}
-}
+    }
 
+
+    // Render self
+    draw(ctx) {
+        ctx.save()
+        ctx.translate(this.x, this.y)
+        ctx.scale(this.size, this.size)
+        ctx.drawImage(this.image, -20, -20, 40, 40)
+        ctx.restore()
+    }
+}
 
 // toto sluzi na inicialne loadnutie vsetkych obrazkov... aby to nebolo ako hidden image v html
 class ResourceManager {
@@ -157,6 +135,15 @@ class ResourceManager {
 
 const resourceManager = new ResourceManager();
 
+window.onkeydown = function(event) {
+    keys[event.keyCode] = true;
+       
+    };
+window.onkeyup = function (event)
+{
+    keys[event.keyCode] = faulse;
+}    
+
 // celu logiku som zabalil do tejto class, riesi inicializaciu ball objektov + riesi rendering + nekonecny loop
 class Game {
   time = Date.now();
@@ -167,6 +154,7 @@ class Game {
 
   objects = [];
 
+  
   // tato funkcia sa vola v html pri startovani hry
   // inicializuje obrazky + vytvara objekty
   async start() {
