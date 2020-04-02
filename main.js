@@ -23,12 +23,27 @@ class Pacman{
 
   // Movement logic
   move(dt) {
-     //const canvas = this.canvas;
-         
-    if (keys[37]){ this.x = this.x - 5}; 
-    if (keys[39]) { this.x = this.x + 5  };
-    if (keys[38]) {this.y = this.y - 5  };
-    if (keys[40]) {this.y = this.y + 5};
+        
+        if (keys[37]) {
+            if (this.x - 5 <= 10)    
+                this.x = 8;
+            this.x = this.x - 5
+        }
+        if (keys[39]) {    
+            if (this.x > 460)  
+                this.x = this.x - 5;
+            this.x = this.x + 5 ;
+        }
+        if (keys[38]) {
+            if (this.y + 5 <=10 ) 
+                this.y =this.y + 5;
+            this.y = this.y - 5 ;
+        }
+        if (keys[40]) {
+            if (this.y + 5 >=470 )
+                this.y = this.y - 5;
+            this.y = this.y + 5;
+        };
 
   }
 
