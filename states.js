@@ -4,6 +4,7 @@ const STATES = {
     INFO:'info',
     CONTROLS:'controls',
     //PAUSED
+
 }
 
 class StateManager {
@@ -19,10 +20,10 @@ class StateManager {
     init() {
         const ctx = this.ctx;
         this.states = {
-            gameState: new GameState(this, ctx),
-            mainMenu: new MainMenu(this, ctx),
+            gameState: new GameState(this, ctx),   
             info: new InfoState(this, ctx),
             controls: new ControlsState(this, ctx),
+            mainMenu: new MainMenu(this, ctx),
         };
         //содержит актуальную картинку, которую должен рендерить
         this.currentState = this.states.mainMenu;
@@ -111,7 +112,7 @@ class MainMenu extends BaseState {
             object.handleEvent(ev);
         });
 
-        if (isKeyPressEvent(ev) && ev.key === 'l') {
+        if (isKeyPressEvent(ev) && ev.key === 'p') {
             this.stateManager.changeState(STATES.GAME);
         }
     }
