@@ -4,7 +4,6 @@ const STATES = {
     INFO:'info',
     CONTROLS:'controls',
     //PAUSED
-
 }
 
 class StateManager {
@@ -17,18 +16,17 @@ class StateManager {
         this.ctx = ctx;
     }
     //содержит все изображения
+     
     init() {
         const ctx = this.ctx;
         this.states = {
-            gameState: new GameState(this, ctx),   
+    gameState: new GameState(this, ctx),   
             info: new InfoState(this, ctx),
             controls: new ControlsState(this, ctx),
             mainMenu: new MainMenu(this, ctx),
-        };
-        //содержит актуальную картинку, которую должен рендерить
-        this.currentState = this.states.mainMenu;
+               
+        };this.currentState = this.states.mainMenu;
     }
-
     changeState(state) {
         const newState = this.states[state];
         if (!newState) {
@@ -80,7 +78,10 @@ class MainMenu extends BaseState {
         
         const soundOffButton = new ImageButton (450,450,30,30, resourceManager.getImageSource('soundOff'));
         soundOffButton.onClick((ev) => {
+ 
             
+ 
+            this.stateManager.changeState(STATES.GAME);
         });
 
         const startGameButton = new TextButton (140,270, 200, 40, 40, 'New game');
@@ -112,7 +113,9 @@ class MainMenu extends BaseState {
             object.handleEvent(ev);
         });
 
+ 
         if (isKeyPressEvent(ev) && ev.key === 'p') {
+ 
             this.stateManager.changeState(STATES.GAME);
         }
     }
@@ -121,6 +124,7 @@ class MainMenu extends BaseState {
 class GameState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
+ 
         this.bgImage = resourceManager.getImageSource('bg');
         this.fgImage = resourceManager.getImageSource('fg');
         this.cherryImage = resourceManager.getImageSource('cherry');
@@ -141,7 +145,7 @@ class GameState extends BaseState {
 
     render(ctx) {
        
-            
+ 
         this.ctx.drawImage(this.bgImage,0,0,490,490);
         this.ctx.drawImage(this.fgImage,0,0,490,490);
         //food
@@ -311,6 +315,7 @@ class GameState extends BaseState {
         this.ctx.drawImage(this.foodImage,470,470,10,10); 
 
         this.objects.forEach(object => object.render(this.ctx));
+
         }
     }    
 

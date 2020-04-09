@@ -7,14 +7,11 @@ const IMAGES = [
   {name: 'bgStart', src: 'img/bg_start.png'},
   {name: 'soundOff', src: 'img/mute.png'},
   {name: 'food', src: 'img/dot.png'},
-];
 
-const SOUNDS = [
-    {name: 'start', src: 'audio/start.mp3'},
 ];
 
 var keys ={};
-
+ 
 /*function checkForCollision(){
   
 }*/
