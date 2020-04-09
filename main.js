@@ -10,6 +10,11 @@ const IMAGES = [
 
 ];
 
+/*const SOUNDS = [
+    {name: 'start', src: 'audio/start.mp3'},
+];*/
+
+
 var keys ={};
  
 /*function checkForCollision(){

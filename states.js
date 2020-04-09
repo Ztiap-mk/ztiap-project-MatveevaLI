@@ -20,7 +20,7 @@ class StateManager {
     init() {
         const ctx = this.ctx;
         this.states = {
-    gameState: new GameState(this, ctx),   
+            gameState: new GameState(this, ctx),   
             info: new InfoState(this, ctx),
             controls: new ControlsState(this, ctx),
             mainMenu: new MainMenu(this, ctx),
@@ -78,10 +78,7 @@ class MainMenu extends BaseState {
         
         const soundOffButton = new ImageButton (450,450,30,30, resourceManager.getImageSource('soundOff'));
         soundOffButton.onClick((ev) => {
- 
-            
- 
-            this.stateManager.changeState(STATES.GAME);
+            //sound.start.pause();
         });
 
         const startGameButton = new TextButton (140,270, 200, 40, 40, 'New game');
@@ -93,6 +90,7 @@ class MainMenu extends BaseState {
         infoButton.onClick((ev) => {
             this.stateManager.changeState(STATES.INFO);
         });
+
 
         const controlsButton = new TextButton (155, 370, 200, 40, 40, 'Controls');
         controlsButton.onClick((ev) => {
@@ -129,12 +127,22 @@ class GameState extends BaseState {
         this.fgImage = resourceManager.getImageSource('fg');
         this.cherryImage = resourceManager.getImageSource('cherry');
         this.foodImage = resourceManager.getImageSource('food');
+
+        const backButton = new TextButton (500, 320, 200, 40, 40, 'Info');
+        backButton.onClick((ev) => {
+            this.stateManager.changeState(MAIN_MENU);
+        });
+       
+
          //  duch a pacman
         for (let i = 0; i < 1; i++) {
         this.objects.push(new Pacman());
         this.objects.push(new Duch());
-        
         }
+
+        /*this.objects = [
+            backButton,
+        ]; */
     }
     
     update(dt) {
@@ -142,7 +150,7 @@ class GameState extends BaseState {
             object.move(dt);
         });
     }
-
+    
     render(ctx) {
        
  
@@ -319,8 +327,6 @@ class GameState extends BaseState {
         }
     }    
 
-
-
 class InfoState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
@@ -336,7 +342,7 @@ class InfoState extends BaseState {
         this.objects.forEach((object) => {
             object.handleEvent(ev);
         });
-        if (isKeyPressEvent(ev) && ev.key === 'l') {
+        if (isKeyPressEvent(ev) && ev.key === 'p') {
             this.stateManager.changeState(STATES.GAME);
         }
     }
@@ -349,8 +355,8 @@ class ControlsState extends BaseState {
         //const canvas = document.getElementById("canvas");
         this.objects = [
            
-            new TextButton(100, 100, 200, 40, 40, 'P - PAUSE GAME'),
-            new TextButton(100, 150, 200, 40, 40, 'Q - QUIT GAME'),
+            new TextButton(100, 100, 200, 30, 30, 'P - PAUSE GAME'),
+            new TextButton(100, 150, 200, 30, 30, 'Q - QUIT GAME'),
         ];
     }
 

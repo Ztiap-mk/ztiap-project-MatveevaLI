@@ -52,7 +52,7 @@ class Duch {
         this.image = resourceManager.getImageSource('duch');
   
         this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
+        this.y = Math.random() * 490
         this.dx = Math.random() * 50 - 25
         this.dy = Math.random() * 50 - 25
         this.size = Math.random() + .3
@@ -71,7 +71,7 @@ class Duch {
               this.dx = Math.abs(this.dx)
           }
           if (this.y > canvas.height) {
-              this.y = canvas.height
+              this.y = 490
               this.dy = -Math.abs(this.dy)
           }
           if (this.y < 0) {
