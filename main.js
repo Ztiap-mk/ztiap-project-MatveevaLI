@@ -6,13 +6,17 @@ const IMAGES = [
   {name: 'bg', src: 'img/bg.png'},
   {name: 'bgStart', src: 'img/bg_start.png'},
   {name: 'soundOff', src: 'img/mute.png'},
+  {name: 'soundOn', src: 'img/sound.png'},
   {name: 'food', src: 'img/dot.png'},
+  {name: 'info', src: 'img/bg_info.png'},
+  {name: 'controls', src: 'img/bg_controls.png'},
+  {name: 'bgpause', src: 'img/bg_pause.png'},
 
 ];
 
-/*const SOUNDS = [
+const SOUNDS = [
     {name: 'start', src: 'audio/start.mp3'},
-];*/
+];
 
 
 var keys ={};
@@ -49,7 +53,7 @@ class Game {
         this.time = Date.now();
         this.stateManager = new StateManager(resourceManager, this.ctx);
     }
-    //objects = [];
+     
  
     async start() {
         console.log('starting game');
@@ -76,15 +80,12 @@ class Game {
         this.stateManager.handleEvent(ev);
     }
 
-
-      //spusta nekonecnu sluzku
     startLoop() {
         this.time = Date.now();
         this.step();
     }
     step() {
-        // console.log("Step");
-        
+             
         // Get time delta
         const now = Date.now();
         const dt = (now - this.time) / 100;

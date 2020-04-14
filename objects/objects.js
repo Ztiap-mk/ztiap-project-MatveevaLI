@@ -90,7 +90,7 @@ class TextButton extends BaseObject {
         ctx.save();
 
         ctx.font = `${this.size}px Verdana`;
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "yellow";
         ctx.fillText(label, x, y, width);
         ctx.restore(); 
     }

@@ -3,34 +3,37 @@ const STATES = {
     MAIN_MENU:'mainMenu',
     INFO:'info',
     CONTROLS:'controls',
-    //PAUSED
+    PAUSE: 'pause',
 }
 
 class StateManager {
     states = {};
-    //изначальное состояние
+    //povodny stav
     currentState = null;
 
     constructor(resourseManager, ctx) {
         this.resourseManager = resourseManager;
         this.ctx = ctx;
     }
-    //содержит все изображения
+    //obsahuje vsetky obrazky
      
     init() {
         const ctx = this.ctx;
         this.states = {
-            gameState: new GameState(this, ctx),   
+             
             info: new InfoState(this, ctx),
             controls: new ControlsState(this, ctx),
+            gameState: new GameState(this, ctx),  
             mainMenu: new MainMenu(this, ctx),
-               
-        };this.currentState = this.states.mainMenu;
+            pause: new Pause(this, ctx),
+        };
+        this.currentState = this.states.mainMenu;
     }
+
     changeState(state) {
         const newState = this.states[state];
         if (!newState) {
-            //объект ошибкиб тип new Error,  используется для генерации исключения.
+            
             throw new Error (`State '${state}' not found`)
         }
         this.currentState = newState;
@@ -72,13 +75,16 @@ class BaseState {
 
 class MainMenu extends BaseState {
     constructor(manager, ctx) {
-        //вызов родительского конструктора
+        //consrtuctor rodica
         super(manager, ctx);
-        const canvas = document.getElementById("canvas");
-        
-        const soundOffButton = new ImageButton (450,450,30,30, resourceManager.getImageSource('soundOff'));
+         
+
+        this.bgStartImage = resourceManager.getImageSource('bgStart');
+        //this.startSound = resourceManager.getSoundSource('start');
+
+        const soundOffButton = new ImageButton (450,500,30,30, resourceManager.getImageSource('soundOff'));
         soundOffButton.onClick((ev) => {
-            //sound.start.pause();
+        //    start.pause();  
         });
 
         const startGameButton = new TextButton (140,270, 200, 40, 40, 'New game');
@@ -86,37 +92,40 @@ class MainMenu extends BaseState {
             this.stateManager.changeState(STATES.GAME);
         });
 
-        const infoButton = new TextButton (190, 320, 200, 40, 40, 'Info');
+        const infoButton = new TextButton (190, 330, 200, 40, 40, 'Info');
         infoButton.onClick((ev) => {
             this.stateManager.changeState(STATES.INFO);
         });
 
 
-        const controlsButton = new TextButton (155, 370, 200, 40, 40, 'Controls');
+        const controlsButton = new TextButton (155, 390, 200, 40, 40, 'Controls');
         controlsButton.onClick((ev) => {
             this.stateManager.changeState(STATES.CONTROLS);
-        });
-
+        }); 
+      
         this.objects = [
-            //new BackgroundStart(0, 0, 490, 490),
             infoButton,
             controlsButton,
             soundOffButton,
-            startGameButton,
+            startGameButton,        
         ];
+
     }
-    
+   
+    render(ctx) {
+        this.ctx.drawImage(this.bgStartImage,0,0,490,550);
+        this.objects.forEach(object => object.render(this.ctx));
+    }
     handleEvent(ev) {
         this.objects.forEach((object) => {
             object.handleEvent(ev);
         });
 
- 
-        if (isKeyPressEvent(ev) && ev.key === 'p') {
- 
+        if (isKeyPressEvent(ev) && ev.key === 'g') {
             this.stateManager.changeState(STATES.GAME);
         }
     }
+    
 }
 
 class GameState extends BaseState {
@@ -127,35 +136,30 @@ class GameState extends BaseState {
         this.fgImage = resourceManager.getImageSource('fg');
         this.cherryImage = resourceManager.getImageSource('cherry');
         this.foodImage = resourceManager.getImageSource('food');
-
-        const backButton = new TextButton (500, 320, 200, 40, 40, 'Info');
+               
+        const backButton = new TextButton (30, 520, 200, 40, 40, 'back');
         backButton.onClick((ev) => {
             this.stateManager.changeState(MAIN_MENU);
         });
        
 
-         //  duch a pacman
-        for (let i = 0; i < 1; i++) {
-        this.objects.push(new Pacman());
-        this.objects.push(new Duch());
-        }
-
-        /*this.objects = [
-            backButton,
-        ]; */
+        // duch a pacman
+       
+        this.objects.push(new Pacman()),
+        this.objects.push(new Duch())    
+        this.objects.push.backButton
     }
-    
-    update(dt) {
+   update(dt) {
         this.objects.forEach((object) => {
             object.move(dt);
         });
     }
     
     render(ctx) {
-       
- 
+     
         this.ctx.drawImage(this.bgImage,0,0,490,490);
         this.ctx.drawImage(this.fgImage,0,0,490,490);
+        
         //food
        
         // 1 line 
@@ -322,28 +326,53 @@ class GameState extends BaseState {
         this.ctx.drawImage(this.foodImage,417,470,10,10); 
         this.ctx.drawImage(this.foodImage,470,470,10,10); 
 
+
+        
         this.objects.forEach(object => object.render(this.ctx));
 
         }
-    }    
-
-class InfoState extends BaseState {
-    constructor(manager, ctx) {
-        super(manager, ctx);
-        //const canvas = document.getElementById("canvas");
-        this.objects = [
-             
-            new TextButton(100, 100, 200, 40, 40, 'Info'),
-           
-        ];
-    }
 
     handleEvent(ev) {
         this.objects.forEach((object) => {
             object.handleEvent(ev);
         });
+    
+        if (isKeyPressEvent(ev) && ev.key === 'q') {
+            this.stateManager.changeState(STATES.MAIN_MENU);
+        }
+        
         if (isKeyPressEvent(ev) && ev.key === 'p') {
-            this.stateManager.changeState(STATES.GAME);
+            this.stateManager.changeState(STATES.PAUSE);
+        }
+    }
+}    
+
+class InfoState extends BaseState {
+    constructor(manager, ctx) {
+        super(manager, ctx);
+        this.infoImage = resourceManager.getImageSource('info');
+       
+        const backButton = new TextButton (180, 500, 200, 40, 40, 'Back');
+        backButton.onClick((ev) => {
+            this.stateManager.changeState(STATES.MAIN_MENU);
+        });
+
+
+        this.objects = [   
+            backButton,
+        ];
+    }
+
+    render(ctx) {
+        this.ctx.drawImage(this.infoImage,0,0,490,550);
+        this.objects.forEach(object => object.render(this.ctx));
+    }
+    handleEvent(ev) {
+        this.objects.forEach((object) => {
+            object.handleEvent(ev);
+        });
+        if (isKeyPressEvent(ev) && ev.key === 'g') {
+            this.stateManager.changeState(STATES.MAIN_MENU);
         }
     }
 }
@@ -352,17 +381,61 @@ class InfoState extends BaseState {
 class ControlsState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
-        //const canvas = document.getElementById("canvas");
-        this.objects = [
-           
-            new TextButton(100, 100, 200, 30, 30, 'P - PAUSE GAME'),
-            new TextButton(100, 150, 200, 30, 30, 'Q - QUIT GAME'),
+        this.controlsImage = resourceManager.getImageSource('controls');
+        const backButton = new TextButton (180, 500, 200, 40, 40, 'Back');
+        backButton.onClick((ev) => {
+            this.stateManager.changeState(STATES.MAIN_MENU);
+        });
+
+
+        this.objects = [   
+            backButton,
         ];
+    
+    }
+    render(ctx) {
+        this.ctx.drawImage(this.controlsImage,0,0,490,550);
+        this.objects.forEach(object => object.render(this.ctx));
     }
 
     handleEvent(ev) {
         this.objects.forEach((object) => {
             object.handleEvent(ev);
         });
+        if (isKeyPressEvent(ev) && ev.key === 'g') {
+            this.stateManager.changeState(STATES.MAIN_MENU);
+        }
+    }
+}
+
+class Pause extends BaseState {
+    constructor(manager, ctx) 
+    {
+        super(manager, ctx);
+
+        this.pauseImage = resourceManager.getImageSource('bgpause');
+
+        const continueButton = new TextButton (140, 300, 200, 40, 40, 'continue');
+        continueButton.onClick((ev) => {
+            this.stateManager.changeState(STATES.GAME);
+        });
+
+        this.objects = [   
+            continueButton,
+        ];
+    
+    }
+    render(ctx) {
+        this.ctx.drawImage(this.pauseImage,0,0,490,550);
+        this.objects.forEach(object => object.render(this.ctx));
+    }
+
+    handleEvent(ev) {
+        this.objects.forEach((object) => {
+            object.handleEvent(ev);
+        });
+        if (isKeyPressEvent(ev) && ev.key === 'c') {
+            this.stateManager.changeState(STATES.GAME);
+        }
     }
 }
