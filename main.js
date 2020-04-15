@@ -11,6 +11,7 @@ const IMAGES = [
   {name: 'info', src: 'img/bg_info.png'},
   {name: 'controls', src: 'img/bg_controls.png'},
   {name: 'bgpause', src: 'img/bg_pause.png'},
+  {name: 'gameover', src: 'img/gameover.png'},
 
 ];
 

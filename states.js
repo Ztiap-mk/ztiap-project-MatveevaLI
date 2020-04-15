@@ -4,6 +4,7 @@ const STATES = {
     INFO:'info',
     CONTROLS:'controls',
     PAUSE: 'pause',
+    GAMEOVER: 'gameover',
 }
 
 class StateManager {
@@ -11,8 +12,8 @@ class StateManager {
     //povodny stav
     currentState = null;
 
-    constructor(resourseManager, ctx) {
-        this.resourseManager = resourseManager;
+    constructor(resourceManager, ctx) {
+        this.resourceManager = resourceManager;
         this.ctx = ctx;
     }
     //obsahuje vsetky obrazky
@@ -26,6 +27,7 @@ class StateManager {
             gameState: new GameState(this, ctx),  
             mainMenu: new MainMenu(this, ctx),
             pause: new Pause(this, ctx),
+            gameover: new GameOver(this,ctx),
         };
         this.currentState = this.states.mainMenu;
     }
@@ -33,8 +35,7 @@ class StateManager {
     changeState(state) {
         const newState = this.states[state];
         if (!newState) {
-            
-            throw new Error (`State '${state}' not found`)
+            throw new Error(`State '${state}' not found`)
         }
         this.currentState = newState;
     }
@@ -62,13 +63,15 @@ class BaseState {
     }
 
     render() {
+        // TODO pridat logiku pre zoradovanie objektov, ktory sa ma prvy zobrazit
         this.objects.forEach(object => object.render(this.ctx));
     }
 
-    update(dt){
+    update(dt) {
 
     }
-    handleEvent(ev){
+
+    handleEvent(ev) {
 
     }
 }
@@ -102,12 +105,24 @@ class MainMenu extends BaseState {
         controlsButton.onClick((ev) => {
             this.stateManager.changeState(STATES.CONTROLS);
         }); 
+
+        const pauseButton = new TextButton (155, 460, 200, 40, 40, 'Pause');
+        pauseButton.onClick((ev) => {
+            this.stateManager.changeState(STATES.PAUSE);
+        }); 
+
+        const gameoverButton = new TextButton (155, 510, 200, 40, 40, 'Game Over');
+        gameoverButton.onClick((ev) => {
+            this.stateManager.changeState(STATES.GAMEOVER);
+        }); 
       
         this.objects = [
             infoButton,
             controlsButton,
             soundOffButton,
-            startGameButton,        
+            startGameButton, 
+            pauseButton,
+            gameoverButton,       
         ];
 
     }
@@ -436,6 +451,32 @@ class Pause extends BaseState {
         });
         if (isKeyPressEvent(ev) && ev.key === 'c') {
             this.stateManager.changeState(STATES.GAME);
+        }
+    }
+}
+
+class GameOver extends BaseState {
+    constructor(manager, ctx) {
+        super(manager, ctx);
+
+        this.GameOver = resourceManager.getImageSource('gameover');
+    }
+        update(dt) {
+            this.objects.forEach((object) => {
+                object.move(dt);
+            });
+        }
+    
+        render(ctx) {
+            this.ctx.drawImage(this.GameOver,0,0,490,550);
+        }
+    handleEvent(ev) {
+        this.objects.forEach((object) => {
+            object.handleEvent(ev);
+        });
+
+        if (isKeyPressEvent(ev) && ev.key === 'm') {
+            this.stateManager.changeState(STATES.MAIN_MENU);
         }
     }
 }
