@@ -17,10 +17,13 @@ const IMAGES = [
 
 const SOUNDS = [
     {name: 'start', src: 'audio/start.mp3'},
+    {name: 'eating', src: 'audio/eating.mp3'},
+    {name: 'die', src: 'audio/die.mp3'},
 ];
 
 
 var keys ={};
+var tick;
  
 /*function checkForCollision(){
   
@@ -34,6 +37,14 @@ const KEY_EVENT_TYPES = {
 const MOUSE_EVENT_TYPES = {
 
 };
+
+
+
+function setText() {
+    text.innerHTML = "Tick: " + tick
+}
+
+
 
 window.onkeydown = function(event) {
     keys[event.keyCode] = true;
@@ -66,8 +77,6 @@ class Game {
         this.startLoop();
     }
 
-  
-
     initEventSystem() {
         this.canvas.addEventListener('click', (ev) => {
             this.handleEvent(ev);
@@ -87,7 +96,6 @@ class Game {
     }
     step() {
              
-        // Get time delta
         const now = Date.now();
         const dt = (now - this.time) / 100;
         this.time = now;

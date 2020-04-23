@@ -63,7 +63,7 @@ class BaseState {
     }
 
     render() {
-        // TODO pridat logiku pre zoradovanie objektov, ktory sa ma prvy zobrazit
+  
         this.objects.forEach(object => object.render(this.ctx));
     }
 
@@ -83,11 +83,11 @@ class MainMenu extends BaseState {
          
 
         this.bgStartImage = resourceManager.getImageSource('bgStart');
-        //this.startSound = resourceManager.getSoundSource('start');
+        this.startSound = resourceManager.getSoundSource('start');
 
-        const soundOffButton = new ImageButton (450,500,30,30, resourceManager.getImageSource('soundOff'));
+       const soundOffButton = new ImageButton (450,500,30,30, resourceManager.getImageSource('soundOff'));
         soundOffButton.onClick((ev) => {
-        //    start.pause();  
+          //sound.startSound.playsound();
         });
 
         const startGameButton = new TextButton (140,270, 200, 40, 40, 'New game');
@@ -139,6 +139,10 @@ class MainMenu extends BaseState {
         if (isKeyPressEvent(ev) && ev.key === 'g') {
             this.stateManager.changeState(STATES.GAME);
         }
+
+        if (isKeyPressEvent(ev) && ev.key === 'o') {
+            this.stateManager.changeState(STATES.GAMEOVER);
+        }
     }
     
 }
@@ -159,30 +163,37 @@ class GameState extends BaseState {
        
 
         // duch a pacman
+       this.objects = [
+        backButton,
+        Duch,
+        Pacman,
+       ];
+        
        
-        this.objects.push(new Pacman()),
-        this.objects.push(new Duch())    
-        this.objects.push.backButton
+        
     }
    update(dt) {
-        this.objects.forEach((object) => {
-            object.move(dt);
-        });
+        /*this.objects.forEach((object) => {
+            object.update(dt);
+        });*/
+        this.backButton.update(dt);
+        this.objects[1].update(dt);
+        this.objects[2].update(dt);
     }
     
     render(ctx) {
-     
+        
         this.ctx.drawImage(this.bgImage,0,0,490,490);
         this.ctx.drawImage(this.fgImage,0,0,490,490);
         
         //food
        
         // 1 line 
-        this.ctx.drawImage(this.foodImage,10,10,10,10);     
+        this.ctx.drawImage(this.foodImage,10,10,15,15);     
         this.ctx.drawImage(this.foodImage,63,10,10,10);         
         this.ctx.drawImage(this.foodImage,115,10,10,10);    
         this.ctx.drawImage(this.foodImage,168,10,10,10);  
-        this.ctx.drawImage(this.foodImage,220,10,10,10); 
+        this.ctx.drawImage(this.foodImage,220,10,15,15); 
         
         this.ctx.drawImage(this.foodImage,260,10,10,10); 
         this.ctx.drawImage(this.foodImage,312,10,10,10); 
@@ -344,6 +355,7 @@ class GameState extends BaseState {
 
         
         this.objects.forEach(object => object.render(this.ctx));
+        this.backButton.render(this.ctx);
 
         }
 
@@ -351,6 +363,7 @@ class GameState extends BaseState {
         this.objects.forEach((object) => {
             object.handleEvent(ev);
         });
+         
     
         if (isKeyPressEvent(ev) && ev.key === 'q') {
             this.stateManager.changeState(STATES.MAIN_MENU);

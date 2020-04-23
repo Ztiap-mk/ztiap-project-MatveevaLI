@@ -37,6 +37,9 @@ class Pacman {
           };
   
     }
+    update(dt) {
+        this.move(dt);
+      }
   
     // Render self
     render(ctx) {
@@ -84,6 +87,9 @@ class Duch {
           this.y += 0 * dt
           this.rotation +=dt/3
    }
+   update(dt) {
+    this.move(dt);
+  }
     // Render self
     render(ctx) {
         ctx.save()
@@ -104,9 +110,44 @@ class Food {
         this.width = width;
         this.height = height;
     }
+
     render(ctx) {
         ctx.save()
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
         ctx.restore()
+    }
+}
+
+class Sound
+{
+    constructor(src)
+    {
+        this.sound = resourceManager.getSoundSource('start');   
+        this.playsound = true;
+    }
+
+    play()
+    {
+        this.sound.play();
+    }
+
+    pause()
+    {
+        this.sound.pause();
+    }
+
+    playsound()
+    {
+        if(this.playsound == false)
+        {
+            this.sound.play();
+            this.playsound == true;
+           
+        }    
+        else 
+        {
+            this.sound.pause();
+            this.playsound == false;
+        }
     }
 }

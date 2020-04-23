@@ -1,10 +1,10 @@
 class ResourceManager {
     loadedImages = new Map();
-   // loadedSounds = new Map();
+    loadedSounds = new Map();
 
     async init() {
         await this.loadImages();
-       // await this.loadSounds();
+        await this.loadSounds();
     }
 
     async loadImages() {
@@ -12,11 +12,6 @@ class ResourceManager {
             IMAGES.map(image => this.loadImage(image)),
     )}
 
-    /*async loadSounds() {
-        await Promise.all(
-            SOUNDS.map(sound => this.loadSound(sound)),
-    )}*/
-  
     async loadImage(imgResource) {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -39,7 +34,12 @@ class ResourceManager {
         return image;
     }
 
-    /*async loadSound(soundResource) {
+    async loadSounds() {
+        await Promise.all(
+            SOUNDS.map(sound => this.loadSound(sound)),
+    )}
+
+    async loadSound(soundResource) {
         return new Promise((resolve, reject) => {
             const sound = new Audio(soundResource.src);
             sound.canplaythrough = () => {
@@ -50,15 +50,15 @@ class ResourceManager {
                 reject(err);
             }
         });
-    }*/
+    }
 
-   /* getSoundSource(soundName) {
+    getSoundSource(soundName) {
         const sound = this.loadedSounds.get(soundName);
         if (sound == null) {
             throw new Error(`Sound '${soundName}' not found`);
         }
         return sound;
-    }*/
+    }
 }
  
 const resourceManager = new ResourceManager();
