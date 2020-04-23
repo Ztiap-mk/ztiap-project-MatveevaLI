@@ -15,6 +15,10 @@ class BaseObject {
     onMouseUpHandler = null;
     onMouseDownHandler = null;
 
+    update(dt) {
+
+    }
+
     render(ctx) {
         const {x, y, width, height} = this;
         ctx.fillRect(x, y, width, height);

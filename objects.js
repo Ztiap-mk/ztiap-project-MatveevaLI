@@ -1,15 +1,15 @@
 
-class Pacman {
+class Pacman extends BaseObject {
     // Initialization
     constructor() {
-      this.canvas = document.getElementById("canvas");
-      this.image = resourceManager.getImageSource('pacman');
-      
-      this.x = 150;
-      this.y = 250;
-      this.height = 20;
-      this.width = 20;
-      
+        super(150, 250, 20, 20);
+        this.canvas = document.getElementById("canvas");
+        this.image = resourceManager.getImageSource('pacman');
+        
+        this.x = 150;
+        this.y = 250;
+        this.height = 20;
+        this.width = 20;
     }
     // Movement logic
     move(dt) {
@@ -49,8 +49,9 @@ class Pacman {
     }
 }
 
-class Duch {
-    constructor() {
+class Duch extends BaseObject {
+    constructor(x, y, width, height) {
+        super(Math.random() * canvas.width, Math.random() * 490, 40, 40);
         this.canvas = document.getElementById("canvas");
         this.image = resourceManager.getImageSource('duch');
   
@@ -60,6 +61,10 @@ class Duch {
         this.dy = Math.random() * 50 - 25
         this.size = Math.random() + .3
         this.rotation = 0
+    }
+
+    handleEvent(ev) {
+        
     }
   
   // Movement logic
@@ -86,10 +91,10 @@ class Duch {
           this.x += this.dx * dt
           this.y += 0 * dt
           this.rotation +=dt/3
-   }
-   update(dt) {
-    this.move(dt);
-  }
+    }
+    update(dt) {
+        this.move(dt);
+    }
     // Render self
     render(ctx) {
         ctx.save()
@@ -122,32 +127,33 @@ class Sound
 {
     constructor(src)
     {
-        this.sound = resourceManager.getSoundSource('start');   
-        this.playsound = true;
+        this.sound = resourceManager.getSoundSource(src);   
+        this.isPlaying = false;
     }
 
     play()
     {
         this.sound.play();
+        this.sound.muted = false;
     }
 
     pause()
     {
-        this.sound.pause();
+        // this.sound.pause();
+        this.sound.muted = true;
     }
 
     playsound()
     {
-        if(this.playsound == false)
+        if(this.isPlaying == false)
         {
-            this.sound.play();
-            this.playsound == true;
-           
-        }    
+            this.play();
+            this.isPlaying = true;
+        }
         else 
         {
-            this.sound.pause();
-            this.playsound == false;
+            this.pause();
+            this.isPlaying = false;
         }
     }
 }
