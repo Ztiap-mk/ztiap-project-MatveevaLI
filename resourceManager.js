@@ -9,8 +9,9 @@ class ResourceManager {
 
     async loadImages() {
         await Promise.all(
-            IMAGES.map(image => this.loadImage(image)),
-    )}
+            IMAGES.map(image => this.loadImage(image))
+        );
+    }
 
     async loadImage(imgResource) {
         return new Promise((resolve, reject) => {
@@ -36,14 +37,20 @@ class ResourceManager {
 
     async loadSounds() {
         await Promise.all(
-            SOUNDS.map(sound => this.loadSound(sound)),
-    )}
+            SOUNDS.map(sound => this.loadSound(sound))
+        );
+    }
 
     async loadSound(soundResource) {
         return new Promise((resolve, reject) => {
             const sound = new Audio(soundResource.src);
+<<<<<<< HEAD
             sound.canplaythrough = () => {
                 this.onloadedSounds.set(soundResource.name, sound);
+=======
+            sound.oncanplaythrough = () => {
+                this.loadedSounds.set(soundResource.name, sound);
+>>>>>>> beed6e19f9fef6782091ea3ffb32714e3a623ef5
                 resolve(sound);
             }
             sound.onerror = (err) => {

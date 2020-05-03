@@ -85,9 +85,24 @@ class MainMenu extends BaseState {
         this.bgStartImage = resourceManager.getImageSource('bgStart');
         this.startSound = resourceManager.getSoundSource('start');
 
+        const sound = new Sound('start');
+        const sound1 = new Sound('eating');
+        const sound2 = new Sound('die');
+        this.isMuted = true;
+
        const soundOffButton = new ImageButton (450,500,30,30, resourceManager.getImageSource('soundOff'));
         soundOffButton.onClick((ev) => {
-          //sound.startSound.playsound();
+            sound.playsound();
+            sound1.playsound();
+            sound2.playsound();
+            // if (this.isMuted) {
+            //     sound.play();
+            //     this.isMuted = false;
+            // } else if (!this.isMuted) {
+            //     sound.pause();
+            //     this.isMuted = true;
+            // }
+            // this.startSound.play();
         });
 
         const startGameButton = new TextButton (140,270, 200, 40, 40, 'New game');
@@ -158,27 +173,29 @@ class GameState extends BaseState {
                
         const backButton = new TextButton (30, 520, 200, 40, 40, 'back');
         backButton.onClick((ev) => {
-            this.stateManager.changeState(MAIN_MENU);
+            this.stateManager.changeState(STATES.MAIN_MENU);
         });
        
+        const duch = new Duch();
+
+        const pacman = new Pacman();
 
         // duch a pacman
-       this.objects = [
-        backButton,
-        Duch,
-        Pacman,
-       ];
-        
-       
-        
+        this.objects = [
+            backButton,
+            duch,
+            pacman,
+        ]; 
     }
    update(dt) {
-        /*this.objects.forEach((object) => {
-            object.update(dt);
-        });*/
-        this.backButton.update(dt);
-        this.objects[1].update(dt);
-        this.objects[2].update(dt);
+        for (let index = 0; index < this.objects.length; index++) {
+            const element = this.objects[index];
+            element.update(dt);
+        }
+
+        // this.objects[0].update(dt)
+        // this.objects[1].update(dt);
+        // this.objects[2].update(dt);
     }
     
     render(ctx) {
@@ -354,10 +371,14 @@ class GameState extends BaseState {
 
 
         
-        this.objects.forEach(object => object.render(this.ctx));
-        this.backButton.render(this.ctx);
-
+        // this.objects.forEach(object => object.render(this.ctx));
+        for (let index = 0; index < this.objects.length; index++) {
+            const element = this.objects[index];
+            element.render(this.ctx);
         }
+        // this.backButton.render(this.ctx);
+
+    }
 
     handleEvent(ev) {
         this.objects.forEach((object) => {
