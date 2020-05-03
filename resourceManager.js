@@ -43,7 +43,7 @@ class ResourceManager {
         return new Promise((resolve, reject) => {
             const sound = new Audio(soundResource.src);
             sound.canplaythrough = () => {
-                this.loadedSounds.set(soundResource.name, sound);
+                this.onloadedSounds.set(soundResource.name, sound);
                 resolve(sound);
             }
             sound.onerror = (err) => {
