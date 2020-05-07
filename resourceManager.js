@@ -44,13 +44,8 @@ class ResourceManager {
     async loadSound(soundResource) {
         return new Promise((resolve, reject) => {
             const sound = new Audio(soundResource.src);
-<<<<<<< HEAD
-            sound.canplaythrough = () => {
-                this.onloadedSounds.set(soundResource.name, sound);
-=======
             sound.oncanplaythrough = () => {
                 this.loadedSounds.set(soundResource.name, sound);
->>>>>>> beed6e19f9fef6782091ea3ffb32714e3a623ef5
                 resolve(sound);
             }
             sound.onerror = (err) => {

@@ -43,9 +43,9 @@ class Pacman extends BaseObject {
   
     // Render self
     render(ctx) {
-      ctx.save()
-      ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
-      ctx.restore()
+      ctx.save();
+      ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+      ctx.restore();
     }
 }
 
@@ -55,12 +55,12 @@ class Duch extends BaseObject {
         this.canvas = document.getElementById("canvas");
         this.image = resourceManager.getImageSource('duch');
   
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * 490
-        this.dx = Math.random() * 50 - 25
-        this.dy = Math.random() * 50 - 25
-        this.size = Math.random() + .3
-        this.rotation = 0
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * 490;
+        this.dx = Math.random() * 50 - 25;
+        this.dy = Math.random() * 50 - 25;
+        this.size = Math.random() + .3;
+        this.rotation = 0;
     }
 
     handleEvent(ev) {

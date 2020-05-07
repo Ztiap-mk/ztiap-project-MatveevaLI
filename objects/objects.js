@@ -83,10 +83,12 @@ class TextButton extends BaseObject {
         height,
         size,
         label,
+        color
     ) {
         super(x, y, width, height);
         this.label = label;
         this.size = size;
+        this.color = color;
     }
 
     render(ctx) {
@@ -94,7 +96,7 @@ class TextButton extends BaseObject {
         ctx.save();
 
         ctx.font = `${this.size}px Verdana`;
-        ctx.fillStyle = "yellow";
+        ctx.fillStyle = this.color;
         ctx.fillText(label, x, y, width);
         ctx.restore(); 
     }
