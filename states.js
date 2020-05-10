@@ -165,11 +165,13 @@ class MainMenu extends BaseState {
 class GameState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
-
+        this.currentLevel = Grid.getLevel("level1");
         this.bgImage = resourceManager.getImageSource('bg');
         this.fgImage = resourceManager.getImageSource('fg');
+
         this.labyrinthPath = new Path2D();
         this.calculateLabyrinth(this.labyrinthPath);
+
         this.cherryImage = resourceManager.getImageSource('cherry');
         this.foodImage = resourceManager.getImageSource('food');
 
@@ -178,9 +180,10 @@ class GameState extends BaseState {
             this.stateManager.changeState(STATES.MAIN_MENU);
         });
 
-        const duch = new Duch();
+        const gamer = this;
 
-        const pacman = new Pacman();
+        const duch = new Duch();
+        const pacman = new Pacman(this.currentLevel);
 
         // duch a pacman
         this.objects = [
@@ -191,14 +194,11 @@ class GameState extends BaseState {
     }
 
     calculateLabyrinth(path){
-        this.gridState = getGridState();
-        // Draw Cells
         path.fillStyle = 'black';
-        for (let i = 0; i < this.gridState.length; i++) {
-            const row = this.gridState[i];
+        for (let i = 0; i < this.currentLevel.length; i++) {
+            const row = this.currentLevel[i];
             for (let j = 0; j < row.length; j++) {
                 const cell = row[j];
-                // let point = new Point(j, i, cell.type);
                 if(cell.type == 1) {
                     path.rect(j*20, i*20, 20, 20);
                 }    
