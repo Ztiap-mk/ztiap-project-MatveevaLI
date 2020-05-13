@@ -9,7 +9,7 @@ class Pacman extends BaseObject {
         this.height = 20;
         this.width = 20;
         this.currentLevel = currentLevel;
-    }
+     }
 
     getCoordinate(x, y) {
         if (this.currentLevel && this.currentLevel[x] && this.currentLevel[y]) {
@@ -45,7 +45,7 @@ class Pacman extends BaseObject {
 
     // Movement logic
     move(dt) {
-        
+ 
         let currentCoordinate = this.getCoordinate(Math.floor((this.x) / 20), Math.floor(this.y / 20));
         let newCoordinate = null;
         let offset = "";
@@ -101,7 +101,7 @@ class Pacman extends BaseObject {
             }
         };
         if (newCoordinate) {
-            
+
             switch (newCoordinate.type) {
                 case Cell.CellType.Empty: this.handleMovement(this, newCoordinate, currentCoordinate, offset);
                 case Cell.CellType.Wall: break;
