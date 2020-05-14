@@ -1,5 +1,5 @@
 const IMAGES = [
-    { name: 'pacman', src: 'img/pacman.png' },
+    { name: 'pacman', src: 'img/pacman_sheet.png' },
     { name: 'duch', src: 'img/red.png' },
     { name: 'cherry', src: 'img/cherry.png' },
     { name: 'fg', src: 'img/fg.png' },
@@ -12,7 +12,6 @@ const IMAGES = [
     { name: 'controls', src: 'img/bg_controls.png' },
     { name: 'bgpause', src: 'img/bg_pause.png' },
     { name: 'gameover', src: 'img/gameover.png' },
-
 ];
 
 const SOUNDS = [
@@ -21,38 +20,28 @@ const SOUNDS = [
     { name: 'die', src: 'audio/die.mp3' },
 ];
 
+let quant = 0;
 
 var keys = {};
 var tick;
 
-/*function checkForCollision(){
-  
-}*/
-
-
 const KEY_EVENT_TYPES = {
-
 };
 
 const MOUSE_EVENT_TYPES = {
-
 };
-
-
 
 function setText() {
     text.innerHTML = "Tick: " + tick
 }
 
-
-
 window.onkeydown = function (event) {
     keys[event.key] = true;
 };
+
 window.onkeyup = function (event) {
     keys[event.key] = false;
 }
-
 
 class Game {
 
@@ -64,7 +53,6 @@ class Game {
         this.stateManager = new StateManager(resourceManager, this.ctx);
     }
 
-
     async start() {
         console.log('starting game');
         await resourceManager.init();
@@ -74,7 +62,6 @@ class Game {
 
         this.startLoop();
     }
-
     initEventSystem() {
         this.canvas.addEventListener('click', (ev) => {
             this.handleEvent(ev);
@@ -83,11 +70,9 @@ class Game {
             this.handleEvent(ev);
         });
     }
-
     handleEvent(ev) {
         this.stateManager.handleEvent(ev);
     }
-
     startLoop() {
         this.time = Date.now();
         this.step();
@@ -103,12 +88,9 @@ class Game {
 
         requestAnimationFrame(() => this.step());
     }
-
-
     update(dt) {
         this.stateManager.update(dt);
     }
-
     render(dt) {
         this.clearCtx();
         this.stateManager.render(dt);
