@@ -1,5 +1,5 @@
-
 class Pacman extends BaseObject {
+ 
     get currentCoordinate() {
         return this._currentCoordinate;
     }
@@ -7,6 +7,7 @@ class Pacman extends BaseObject {
         this.x = value.pxX;
         this.y = value.pxY;
         this._currentCoordinate = value;
+
     }
 
     constructor(grid) {
@@ -29,6 +30,7 @@ class Pacman extends BaseObject {
     }
 
     move(dt) {
+ 
         // Prevent multiple keys hit together
         if (Object.keys(keys).filter(key => key.indexOf("Arrow") > -1 && keys[key] == true).length != 1) {
             return;
@@ -42,15 +44,17 @@ class Pacman extends BaseObject {
         if (keys["ArrowRight"]) { deltaX += quant + 1; deltaY += quant; }
         if (keys["ArrowUp"]) { deltaY--; deltaX += quant; }
         if (keys["ArrowDown"]) { deltaY += quant + 1; deltaX += quant; }
+ 
 
         newCoordinate = this.grid.getCoordinateFromPX(deltaX, deltaY);
-
+ 
         // Cancel Collision 
         if (keys["ArrowRight"]) { newCoordinate.pxX -= quant; newCoordinate.pxY -= quant; }
         if (keys["ArrowUp"]) { newCoordinate.pxX -= quant; }
         if (keys["ArrowDown"]) { newCoordinate.pxX -= quant; newCoordinate.pxY -= quant; }
-
+ 
         if (newCoordinate) {
+
             switch (newCoordinate.type) {
                 case Coordinate.CoordinateType.Empty: this.handleMovement(this, newCoordinate);
                 case Coordinate.CoordinateType.Wall: break;
