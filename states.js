@@ -86,15 +86,20 @@ class MainMenu extends BaseState {
         this.startSound = resourceManager.getSoundSource('start');
 
         const sound = new Sound('start');
-        const sound1 = new Sound('eating');
-        const sound2 = new Sound('die');
+        // const sound1 = new Sound('eating');
+        // const sound2 = new Sound('die');
         this.isMuted = true;
 
         const soundOffButton = new ImageButton(450, 500, 30, 30, resourceManager.getImageSource('soundOff'));
         soundOffButton.onClick((ev) => {
-            sound.playsound();
-            sound1.playsound();
-            sound2.playsound();
+            // for (var i = 0; i < 2; i++)
+            // {
+            //     sound.playsound();
+            //     i++;
+            // }
+            sound.playsound(); 
+            //sound1.playsound();
+           // sound2.playsound();
             // if (this.isMuted) {
             //     sound.play();
             //     this.isMuted = false;
@@ -165,12 +170,22 @@ class MainMenu extends BaseState {
 class GameState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
-        this.currentLevel = Grid.getLevel("level1");
+
+        this.grid = new Grid();
+        this.grid.LoadLevel("level1");
+        quant = Math.floor(canvas.width / this.grid.CurrentLevel.length);
+
         this.bgImage = resourceManager.getImageSource('bg');
         this.fgImage = resourceManager.getImageSource('fg');
 
+        const soundEating = new Sound('eating');
+        const soundDie = new Sound('die');
+        
+        // this.isMuted = true;
+        // soundEating.playsound();
+
         this.labyrinthPath = new Path2D();
-        this.calculateLabyrinth(this.labyrinthPath);
+        this.calculateLabyrinth(this.labyrinthPath, this.grid.CurrentLevel);
 
         this.cherryImage = resourceManager.getImageSource('cherry');
         this.foodImage = resourceManager.getImageSource('food');
@@ -183,7 +198,7 @@ class GameState extends BaseState {
         const gamer = this;
 
         const duch = new Duch();
-        const pacman = new Pacman(this.currentLevel);
+        const pacman = new Pacman(this.grid);
 
         // duch a pacman
         this.objects = [
@@ -193,15 +208,20 @@ class GameState extends BaseState {
         ];
     }
 
-    calculateLabyrinth(path){
+    calculateLabyrinth(path, currentLevel){
         path.fillStyle = 'black';
-        for (let i = 0; i < this.currentLevel.length; i++) {
-            const row = this.currentLevel[i];
+        for (let i = 0; i < currentLevel.length; i++) {
+            const row = currentLevel[i];
             for (let j = 0; j < row.length; j++) {
                 const cell = row[j];
-                if(cell.type == 1) {
-                    path.rect(j*20, i*20, 20, 20);
-                }    
+                if (i == 14 && j == 9) console.log("Labyrint x = " + currentLevel[i][j].x + " y = " + currentLevel[i][j].y + " type = " + currentLevel[i][j].type);
+                if(cell.type == Coordinate.CoordinateType.Wall) {
+                    path.rect(j*quant, i*quant, quant, quant);
+                }  
+                 if(cell.type == Coordinate.CoordinateType.Food) {
+                     path.arc(j*quant, i*quant, 5, 0, 2 * Math.PI);
+                    
+                }  
             }
         }
     }
@@ -386,8 +406,11 @@ class GameState extends BaseState {
         // this.ctx.drawImage(this.bgImage, 0, 0, 490, 490);
         // this.ctx.drawImage(this.fgImage, 0, 0, 490, 490);
         //food
-        ctx.fillStyle = 'black';
-        ctx.fill(this.labyrinthPath);
+        
+         ctx.fillStyle = 'black';
+         ctx.fill(this.labyrinthPath);
+        // ctx.strokeStyle = 'red';
+        // ctx.stroke(this.labyrinthPath);
 
         // this.drawFood(this.ctx, this.foodImage);
         // 1 line 

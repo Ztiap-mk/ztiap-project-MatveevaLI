@@ -1,226 +1,106 @@
 class Pacman extends BaseObject {
-    // Initialization
-    constructor(currentLevel) {
-        super(150, 250, 20, 20);
+
+    get currentCoordinate() {
+        return this._currentCoordinate;
+    }
+    set currentCoordinate(value) {
+        this.x = value.pxX;
+        this.y = value.pxY;
+        this._currentCoordinate = value;
+    }
+
+    constructor(grid) {
+        super(150, 250, quant, quant);
         this.canvas = document.getElementById("canvas");
         this.image = resourceManager.getImageSource('pacman');
-        this.x = 150;
-        this.y = 250;
-        this.height = 20;
-        this.width = 20;
-        this.currentLevel = currentLevel;
-     }
 
-    getCoordinate(x, y) {
-        if (this.currentLevel && this.currentLevel[x] && this.currentLevel[y]) {
-            return this.currentLevel[y][x];
-        }
+        this._currentCoordinate = null;
+        this.currentCoordinate = grid.getCoordinateFromPX(150, 250);
+        this.height = quant;
+        this.width = quant;
+        this.currentLevel = grid.currentLevel;
+        this.grid = grid;
+        this.counter = 0;
+        this.currentFrameHeight = 1;
+        this.score = 0;
     }
 
-    handleMovement(pacman, newCoordinate, currentCoordinate, offset) {
-        if (offset == "+X") {
-            pacman.x++;
-        }
-        else if (offset == "-X") {
-            pacman.x--;
-        }
-        else if (offset == "+Y") {
-            pacman.y++;
-        }
-        else if (offset == "-Y") {
-            pacman.y--;
-        }
-        // const dxMin = Math.floor(pacman.x / 20) * 20;
-
-        // const dyMin = Math.floor(pacman.y / 20) * 20;
-        // const dyMax = Math.ceil(pacman.y / 20) * 20;
-
-        // if (newCoordinate.x * 20 < dxMin || newCoordinate.x * 20 > dxMax) {
-        //     pacman.x = newCoordinate.x * 20;
-        // }
-        // if (newCoordinate.y * 20 < dyMin || newCoordinate.y * 20 > dyMax) {
-        //     pacman.y = newCoordinate.y * 20;
-        // }
+    handleMovement(pacman, newCoordinate) {
+        pacman.currentCoordinate = newCoordinate;
     }
 
-    // Movement logic
+    handleFood(newCoordinate) {
+        this.score += 10;
+        this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type= Coordinate.CoordinateType.Empty;
+    }
+
     move(dt) {
- 
-        let currentCoordinate = this.getCoordinate(Math.floor((this.x) / 20), Math.floor(this.y / 20));
+
+        // Prevent multiple keys hit together
+        if (Object.keys(keys).filter(key => key.indexOf("Arrow") > -1 && keys[key] == true).length != 1) {
+            return;
+        }
+
+        let deltaX = this.currentCoordinate.pxX;
+        let deltaY = this.currentCoordinate.pxY;
         let newCoordinate = null;
-        let offset = "";
-        
-        let currentPointX = Math.floor(this.x / 20);
-        let currentPointY = Math.floor(this.y / 20);
 
-        if (keys["ArrowLeft"]) {
-            let newPointX = Math.floor((this.x - 1) / 20);
-            if (newPointX == currentPointX) {
-                this.x--;
-                return;
-            }
-            else {
-                newCoordinate = this.getCoordinate(newPointX, currentPointY);
-                offset = "-X";
-            }
-        }
+        if (keys["ArrowLeft"]) { deltaX--; }
+        if (keys["ArrowRight"]) { deltaX += quant + 1; deltaY += quant; }
+        if (keys["ArrowUp"]) { deltaY--; deltaX += quant; }
+        if (keys["ArrowDown"]) { deltaY += quant + 1; deltaX += quant; }
 
-        if (keys["ArrowRight"]) {
-            
-            let newPointX = Math.floor((this.x + 1) / 20);
-            if (newPointX == currentPointX) {
-                this.x++;
-                return;
-            }
-            else {
-                newCoordinate = this.getCoordinate(newPointX, currentPointY);
-                offset = "+X";
-            }
-        }
+        newCoordinate = this.grid.getCoordinateFromPX(deltaX, deltaY);
 
-        if (keys["ArrowUp"]) {
-            let newPointY = Math.floor((this.y - 1) / 20);
-            if (newPointY == currentPointY) {
-                this.y--;
-                return;
-            }
-            else {
-                newCoordinate = this.getCoordinate(currentPointX, newPointY);
-                offset = "-Y";
-            }
-        }
-        if (keys["ArrowDown"]) {
-            let newPointY = Math.floor((this.y + 1) / 20);
-            if (newPointY == currentPointY) {
-                this.y++;
-                return;
-            }
-            else {
-                newCoordinate = this.getCoordinate(currentPointX, newPointY);
-                offset = "+Y";
-            }
-        };
+        // Cancel Collision 
+        if (keys["ArrowRight"]) { newCoordinate.pxX -= quant; newCoordinate.pxY -= quant; }
+        if (keys["ArrowUp"]) { newCoordinate.pxX -= quant; }
+        if (keys["ArrowDown"]) { newCoordinate.pxX -= quant; newCoordinate.pxY -= quant; }
+
         if (newCoordinate) {
 
             switch (newCoordinate.type) {
-                case Cell.CellType.Empty: this.handleMovement(this, newCoordinate, currentCoordinate, offset);
-                case Cell.CellType.Wall: break;
-                case Cell.CellType.Food: break;
-                case Cell.CellType.BigFood: break;
+                case Coordinate.CoordinateType.Empty: this.handleMovement(this, newCoordinate);
+                case Coordinate.CoordinateType.Wall: break;
+                case Coordinate.CoordinateType.Food: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
+                case Coordinate.CoordinateType.BigFood: break;
                 default: throw "Error";
             }
         }
     }
+
     update(dt) {
         this.move(dt);
     }
 
-    // Render self
     render(ctx) {
         ctx.save();
-        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        var frame_width = 193;
+        var frame_height = 193;
+        var frame = Math.floor(this.counter % 3);
+
+        if (keys["ArrowRight"]) {
+            this.currentFrameHeight = 0 * frame_height;
+            ctx.drawImage(this.image, frame * frame_width, this.currentFrameHeight, frame_width, frame_height, this.x, this.y, this.width, this.height);
+        }
+
+        if (keys["ArrowLeft"]) {
+            this.currentFrameHeight = 1 * frame_height;
+            ctx.drawImage(this.image, frame * frame_width, this.currentFrameHeight, frame_width, frame_height, this.x, this.y, this.width, this.height);
+        }
+
+        if (keys["ArrowUp"]) {
+            this.currentFrameHeight = 2 * frame_height;
+            ctx.drawImage(this.image, frame * frame_width, this.currentFrameHeight, frame_width, frame_height, this.x, this.y, this.width, this.height);
+        }
+
+        if (keys["ArrowDown"]) {
+            this.currentFrameHeight = 3 * frame_height;
+            ctx.drawImage(this.image, frame * frame_width, this.currentFrameHeight, frame_width, frame_height, this.x, this.y, this.width, this.height);
+        }
+
+        else ctx.drawImage(this.image, frame * frame_width, this.currentFrameHeight, frame_width, frame_height, this.x, this.y, this.width, this.height);
+        this.counter = this.counter + .05;
         ctx.restore();
-    }
-}
-
-class Duch extends BaseObject {
-    constructor(x, y, width, height) {
-        super(Math.random() * canvas.width, Math.random() * 490, 40, 40);
-        this.canvas = document.getElementById("canvas");
-        this.image = resourceManager.getImageSource('duch');
-
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * 490;
-        this.dx = Math.random() * 50 - 25;
-        this.dy = Math.random() * 50 - 25;
-        this.size = Math.random() + .3;
-        this.rotation = 0;
-    }
-
-    handleEvent(ev) {
-
-    }
-
-    // Movement logic
-    move(dt) {
-        const canvas = this.canvas;
-        if (this.x > canvas.width) {
-            this.x = canvas.width
-            this.dx = -Math.abs(this.dx)
-        }
-        if (this.x < 0) {
-            this.x = 0
-            this.dx = Math.abs(this.dx)
-        }
-        if (this.y > canvas.height) {
-            this.y = 490
-            this.dy = -Math.abs(this.dy)
-        }
-        if (this.y < 0) {
-            this.y = 0
-            this.dy = Math.abs(this.dy) * 0.2
-        }
-
-        // Movement
-        this.x += this.dx * dt
-        this.y += 0 * dt
-        this.rotation += dt / 3
-    }
-    update(dt) {
-        this.move(dt);
-    }
-    // Render self
-    render(ctx) {
-        ctx.save()
-        ctx.translate(this.x, this.y)
-        ctx.scale(this.size, this.size)
-        ctx.drawImage(this.image, -20, -20, 40, 40)
-        ctx.restore()
-    }
-}
-
-class Food {
-    constructor(x, y, width, height) {
-        this.canvas = document.getElementById("canvas");
-        this.image = resourceManager.getImageSource('food');
-
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-
-    render(ctx) {
-        ctx.save()
-        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-        ctx.restore()
-    }
-}
-
-class Sound {
-    constructor(src) {
-        this.sound = resourceManager.getSoundSource(src);
-        this.isPlaying = false;
-    }
-
-    play() {
-        this.sound.play();
-        this.sound.muted = false;
-    }
-
-    pause() {
-        // this.sound.pause();
-        this.sound.muted = true;
-    }
-
-    playsound() {
-        if (this.isPlaying == false) {
-            this.play();
-            this.isPlaying = true;
-        }
-        else {
-            this.pause();
-            this.isPlaying = false;
-        }
     }
 }
