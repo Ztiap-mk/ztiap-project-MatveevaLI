@@ -9,17 +9,18 @@ class Pacman extends BaseObject {
         this._currentCoordinate = value;
     }
 
-    constructor(grid) {
+    constructor(game) {
         super(150, 250, quant, quant);
         this.canvas = document.getElementById("canvas");
         this.image = resourceManager.getImageSource('pacman');
 
         this._currentCoordinate = null;
-        this.currentCoordinate = grid.getCoordinateFromPX(150, 250);
+        this.currentCoordinate = game.grid.getCoordinateFromPX(150, 250);
         this.height = quant;
         this.width = quant;
-        this.currentLevel = grid.currentLevel;
-        this.grid = grid;
+        this.currentLevel = game.grid.currentLevel;
+        this.game = game;
+        this.grid = game.grid;
         this.counter = 0;
         this.currentFrameHeight = 1;
         this.score = 0;
@@ -30,8 +31,17 @@ class Pacman extends BaseObject {
     }
 
     handleFood(newCoordinate) {
-        this.score += 10;
-        this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type= Coordinate.CoordinateType.Empty;
+        if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.Food) {
+            this.score += 10;
+        }
+
+        if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.BigFood) {
+            this.score += 100;
+        }
+
+        this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type = Coordinate.CoordinateType.Empty;
+        this.game.calculateLabyrinthPath();
+        console.log("score: " + this.score);
     }
 
     move(dt) {
@@ -63,7 +73,7 @@ class Pacman extends BaseObject {
                 case Coordinate.CoordinateType.Empty: this.handleMovement(this, newCoordinate);
                 case Coordinate.CoordinateType.Wall: break;
                 case Coordinate.CoordinateType.Food: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
-                case Coordinate.CoordinateType.BigFood: break;
+                case Coordinate.CoordinateType.BigFood: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
                 default: throw "Error";
             }
         }
@@ -74,6 +84,7 @@ class Pacman extends BaseObject {
     }
 
     render(ctx) {
+
         ctx.save();
         var frame_width = 193;
         var frame_height = 193;
@@ -102,5 +113,10 @@ class Pacman extends BaseObject {
         else ctx.drawImage(this.image, frame * frame_width, this.currentFrameHeight, frame_width, frame_height, this.x, this.y, this.width, this.height);
         this.counter = this.counter + .05;
         ctx.restore();
+
+        ctx.font = `20px Verdana`;
+        ctx.fillStyle =  'black';
+        ctx.fillText("Score " + this.score, canvas.width * 0.45, canvas.height * 0.97);
+     
     }
 }
