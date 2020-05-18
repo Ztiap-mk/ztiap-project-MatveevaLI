@@ -1,56 +1,41 @@
 class MainMenu extends BaseState {
     constructor(manager, ctx) {
-
         super(manager, ctx);
 
         this.bgStartImage = resourceManager.getImageSource('bgStart');
         this.startSound = resourceManager.getSoundSource('start');
 
         const sound = new Sound('start');
-        // const sound1 = new Sound('eating');
-        // const sound2 = new Sound('die');
         this.isMuted = true;
 
         const soundOffButton = new ImageButton(450, 500, 30, 30, resourceManager.getImageSource('soundOff'));
         soundOffButton.onClick((ev) => {
-            // for (var i = 0; i < 2; i++)
-            // {
-            //     sound.playsound();
-            //     i++;
-            // }
             sound.playsound();
-            //sound1.playsound();
-            // sound2.playsound();
-            // if (this.isMuted) {
-            //     sound.play();
-            //     this.isMuted = false;
-            // } else if (!this.isMuted) {
-            //     sound.pause();
-            //     this.isMuted = true;
-            // }
-            // this.startSound.play();
         });
 
-        const startGameButton = new TextButton(140, 270, 200, 40, 40, 'New game', 'yellow');
+        const startGameButton = new TextButton(canvas.width / 2, canvas.height / 2, 200, 40, 40, 'New game', 'yellow');
         startGameButton.onClick((ev) => {
-             
-            //this.stateManager.states.gameStates = new GameState(this.stateManager, ctx);
-            this.stateManager.changeState(STATES.GAME);
+            this.stateManager.changeState(StateManager.STATES.GAME);
         });
 
-        const infoButton = new TextButton(190, 330, 200, 40, 40, 'Info', 'yellow');
+        const infoButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.1 * canvas.height, 200, 40, 40, 'Info', 'yellow');
         infoButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.INFO);
+            this.stateManager.changeState(StateManager.STATES.INFO);
         });
 
-        const controlsButton = new TextButton(155, 390, 200, 40, 40, 'Controls', 'yellow');
+        const controlsButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.2 * canvas.height, 200, 40, 40, 'Controls', 'yellow');
         controlsButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.CONTROLS);
+            this.stateManager.changeState(StateManager.STATES.CONTROLS);
         });
 
-        const gameoverButton = new TextButton(155, 510, 200, 40, 40, 'Game Over', 'yellow');
+        const editorButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.3 * canvas.height, 200, 40, 40, 'World Editor', 'yellow');
+        editorButton.onClick((ev) => {
+            this.stateManager.changeState(StateManager.STATES.WORLD_EDITOR);
+        });
+
+        const gameoverButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.4 * canvas.height, 200, 40, 40, 'Game Over', 'yellow');
         gameoverButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.GAMEOVER);
+            this.stateManager.changeState(StateManager.STATES.GAMEOVER);
         });
 
         this.objects = [
@@ -58,13 +43,13 @@ class MainMenu extends BaseState {
             controlsButton,
             soundOffButton,
             startGameButton,
+            editorButton,
             gameoverButton,
         ];
-
     }
 
     render(ctx) {
-        this.ctx.drawImage(this.bgStartImage, 0, 0, 500, 550);
+        this.ctx.drawImage(this.bgStartImage, 0, 0, canvas.width, canvas.height);
         this.objects.forEach(object => object.render(this.ctx));
     }
     handleEvent(ev) {
@@ -72,9 +57,12 @@ class MainMenu extends BaseState {
             object.handleEvent(ev);
         });
 
+        if (isKeyPressEvent(ev) && ev.key === 'g') {
+            this.stateManager.changeState(StateManager.STATES.GAME);
+        }
+
         if (isKeyPressEvent(ev) && ev.key === 'o') {
-            this.stateManager.changeState(STATES.GAMEOVER);
+            this.stateManager.changeState(StateManager.STATES.GAMEOVER);
         }
     }
-
 }

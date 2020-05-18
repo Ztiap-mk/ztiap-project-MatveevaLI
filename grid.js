@@ -20,7 +20,8 @@ class Grid {
         return new Coordinate(x, y, val.x, val.y, val.type);
     }
     getPXCoordinateFromCell(x, y){
-        return new Coordinate(x * quant, y * quant, x, y, null);
+        const obj = this.CurrentLevel[y][x];
+        return new Coordinate(x * quant, y * quant, x, y, obj.type);
     }
 }
 

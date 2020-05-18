@@ -4,8 +4,9 @@ class ControlsState extends BaseState {
         this.controlsImage = resourceManager.getImageSource('controls');
         const backButton = new TextButton(180, 500, 200, 40, 40, 'Back', 'yellow');
         backButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
         });
+
 
         this.objects = [
             backButton,
@@ -13,7 +14,7 @@ class ControlsState extends BaseState {
 
     }
     render(ctx) {
-        this.ctx.drawImage(this.controlsImage, 0, 0, 500, 550);
+        this.ctx.drawImage(this.controlsImage, 0, 0, canvas.width, canvas.height);
         this.objects.forEach(object => object.render(this.ctx));
     }
 
@@ -22,7 +23,7 @@ class ControlsState extends BaseState {
             object.handleEvent(ev);
         });
         if (isKeyPressEvent(ev) && ev.key === 'g') {
-            this.stateManager.changeState(STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
         }
     }
 }

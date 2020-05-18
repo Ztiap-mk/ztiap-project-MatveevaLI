@@ -3,40 +3,40 @@ class GameState extends BaseState {
         super(manager, ctx);
 
         this.background = resourceManager.getImageSource('bgpause');
-
         this.grid = new Grid();
         this.grid.redrawLabyrinthCallback = this.updateLabyrinthPath;
-
+        
         this.grid.LoadLevel("level1");
         quant = Math.floor(canvas.width / this.grid.CurrentLevel.length);
+
+        this.bgImage = resourceManager.getImageSource('bg');
+        this.fgImage = resourceManager.getImageSource('fg');
 
         const soundEating = new Sound('eating');
         const soundDie = new Sound('die');
 
-        // this.isMuted = true;
-        // soundEating.playsound();
-
         this.calculateLabyrinthPath();
-        const backButton = new TextButton(canvas.width * 0.06, canvas.height * 0.97, 300, 20, 20, 'Back to Menu', 'black');
+
+        this.cherryImage = resourceManager.getImageSource('cherry');
+        this.foodImage = resourceManager.getImageSource('food');
+
+        const backButton = new TextButton(canvas.width * 0.17, canvas.height * 0.97, 300, 20,20, 'Back to Menu', 'black');
         backButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
         });
 
-        const pauseButton = new TextButton(canvas.width * 0.8, canvas.height * 0.97, 300, 20, 20, 'Pause', 'black');
+        const pauseButton = new TextButton(canvas.width * 0.9, canvas.height * 0.97, 300, 20, 20, 'Pause', 'black');
         pauseButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.PAUSE);
+            this.stateManager.changeState(StateManager.STATES.PAUSE);
         });
 
-        const gamer = this;
-
-        const duch = new Duch(this);
+        const ghost = new Ghost(this);
         const pacman = new Pacman(this);
 
-        // duch a pacman
         this.objects = [
             backButton,
             pauseButton,
-            duch,
+            ghost,
             pacman,
         ];
     }
@@ -70,7 +70,7 @@ class GameState extends BaseState {
     }
 
     render(ctx) {
-        this.ctx.drawImage(this.background, 0, 0, 500, 500);
+        this.ctx.drawImage(this.background, 0, 0, canvas.width, 500);
         ctx.fillStyle = '#151584';
         ctx.fill(this.labyrinthPath);
  
@@ -85,12 +85,13 @@ class GameState extends BaseState {
             object.handleEvent(ev);
         });
 
+
         if (isKeyPressEvent(ev) && ev.key === 'q') {
-            this.stateManager.changeState(STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
         }
 
         if (isKeyPressEvent(ev) && ev.key === 'p') {
-            this.stateManager.changeState(STATES.PAUSE);
+            this.stateManager.changeState(StateManager.STATES.PAUSE);
         }
     }
 }

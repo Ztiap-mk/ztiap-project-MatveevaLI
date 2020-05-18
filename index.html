@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -7,28 +7,58 @@
 </head>
 
 <body>
-  <b>
-  Pacman
-  </b>
- <p>
-    <canvas id="canvas" tabindex="1" height="550" width="500">No Canvas :(</canvas>
-  </p>
-  <script src="grid.js"></script>
-  <script src="states/states.js"></script>
+  <style>
+    html {
+      height: 100%;
+    }
+
+    body {
+      background-image: linear-gradient(141deg, #645680 0%, #33253e 51%, #201125 75%);
+      margin: 0;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    canvas {
+      -webkit-box-shadow: 6px 10px 11px -4px rgba(0, 0, 0, 0.73);
+      -moz-box-shadow: 6px 10px 11px -4px rgba(0, 0, 0, 0.73);
+      box-shadow: 6px 10px 11px -4px rgba(0, 0, 0, 0.73);
+      border-radius: 5px;
+    }
+
+    canvas:focus {
+      outline: none;
+    }
+  </style>
+  <div style="text-align: center;">
+    <p>
+      <canvas id="canvas" tabindex="1" height="550" width="500">No Canvas :(</canvas>
+    </p>
+  </div>
+
+  <!-- Load Independent Objects -->
+  <script src="objects/BaseObject.js"></script>
+  <script src="objects/Food.js"></script>
+  <script src="objects/Ghost.js"></script>
+  <script src="objects/ImageButton.js"></script>
+  <script src="objects/Pacman.js"></script>
+  <script src="objects/Sound.js"></script>
+  <script src="objects/TextButton.js"></script>
+  <script src="objects/WorldEditor.js"></script>
+  <!-- Load States -->
+  <script src="states/StateManager.js"></script>
+  <script src="states/BaseState.js"></script>
   <script src="states/ControlsState.js"></script>
   <script src="states/GameOver.js"></script>
   <script src="states/GameState.js"></script>
   <script src="states/InfoState.js"></script>
-  <script src="states/Pause.js"></script>
   <script src="states/MainMenu.js"></script>
+  <script src="states/Pause.js"></script>
+  <!-- Load Game Mechanics -->
+  <script src="Grid.js"></script>
   <script src="utils/utils.js"></script>
-  <script src="objects/objects.js"></script>
-  <script src="objects/Duch.js"></script>
-  <script src="objects/Food.js"></script>
-  <script src="objects/Sound.js"></script>
-  <script src="objects.js"></script>
   <script src="resourceManager.js"></script>
-   <script src="main.js"></script>
+  <script src="Game.js"></script>
 
   <script type="text/javascript">
     const game = new Game();

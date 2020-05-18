@@ -55,10 +55,10 @@ class Pacman extends BaseObject {
         let deltaY = this.currentCoordinate.pxY;
         let newCoordinate = null;
 
-        if (keys["ArrowLeft"]) { deltaX--; }
-        if (keys["ArrowRight"]) { deltaX += quant + 1; deltaY += quant; }
-        if (keys["ArrowUp"]) { deltaY--; deltaX += quant; }
-        if (keys["ArrowDown"]) { deltaY += quant + 1; deltaX += quant; }
+        if (keys["ArrowLeft"]) { deltaX-=3; }
+        if (keys["ArrowRight"]) { deltaX += quant + 3; deltaY += quant; }
+        if (keys["ArrowUp"]) { deltaY-=3; deltaX += quant; }
+        if (keys["ArrowDown"]) { deltaY += quant + 3; deltaX += quant; }
 
         newCoordinate = this.grid.getCoordinateFromPX(deltaX, deltaY);
 
@@ -84,7 +84,6 @@ class Pacman extends BaseObject {
     }
 
     render(ctx) {
-
         ctx.save();
         var frame_width = 193;
         var frame_height = 193;
@@ -112,11 +111,10 @@ class Pacman extends BaseObject {
 
         else ctx.drawImage(this.image, frame * frame_width, this.currentFrameHeight, frame_width, frame_height, this.x, this.y, this.width, this.height);
         this.counter = this.counter + .05;
-        ctx.restore();
 
         ctx.font = `20px Verdana`;
         ctx.fillStyle =  'black';
-        ctx.fillText("Score " + this.score, canvas.width * 0.45, canvas.height * 0.97);
-     
+        ctx.fillText("Score " + this.score, canvas.width * 0.47, canvas.height * 0.97);
+        ctx.restore();
     }
 }

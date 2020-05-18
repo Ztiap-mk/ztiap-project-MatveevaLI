@@ -5,8 +5,9 @@ class InfoState extends BaseState {
 
         const backButton = new TextButton(180, 500, 200, 40, 40, 'Back', 'yellow');
         backButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
         });
+
 
         this.objects = [
             backButton,
@@ -14,7 +15,7 @@ class InfoState extends BaseState {
     }
 
     render(ctx) {
-        this.ctx.drawImage(this.infoImage, 0, 0, 500, 550);
+        this.ctx.drawImage(this.infoImage, 0, 0, canvas.width, canvas.height);
         this.objects.forEach(object => object.render(this.ctx));
     }
     handleEvent(ev) {
@@ -22,7 +23,7 @@ class InfoState extends BaseState {
             object.handleEvent(ev);
         });
         if (isKeyPressEvent(ev) && ev.key === 'g') {
-            this.stateManager.changeState(STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
         }
     }
 }

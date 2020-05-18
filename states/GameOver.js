@@ -11,7 +11,7 @@ class GameOver extends BaseState {
     }
 
     render(ctx) {
-        this.ctx.drawImage(this.GameOver, 0, 0, 500, 550);
+        this.ctx.drawImage(this.GameOver, 0, 0, canvas.width, canvas.height);
     }
     handleEvent(ev) {
         this.objects.forEach((object) => {
@@ -19,7 +19,7 @@ class GameOver extends BaseState {
         });
 
         if (isKeyPressEvent(ev) && ev.key === 'm') {
-            this.stateManager.changeState(STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
         }
     }
 }

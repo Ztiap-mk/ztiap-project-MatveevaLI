@@ -1,10 +1,5 @@
 class BaseObject {
-    constructor(
-        x, 
-        y,
-        width,
-        height,
-    ) {
+    constructor(x, y, width, height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -20,7 +15,7 @@ class BaseObject {
     }
 
     render(ctx) {
-        const {x, y, width, height} = this;
+        const { x, y, width, height } = this;
         ctx.fillRect(x, y, width, height);
         ctx.strokeRect(x, y, width, height);
     }
@@ -53,51 +48,5 @@ class BaseObject {
             }
         }
         return false;
-    }
-}
-
-class ImageButton extends BaseObject {
-    constructor(
-        x,
-        y,
-        width,
-        height,
-        image,
-    ) {
-        super(x, y, width, height);
-        this.image = image;
-    }
-
-    render(ctx) {
-        const {image, x, y, width, height} = this;
-
-        ctx.drawImage(image, x, y, width, height);
-    }
-}
-
-class TextButton extends BaseObject {
-    constructor(
-        x,
-        y,
-        width,
-        height,
-        size,
-        label,
-        color
-    ) {
-        super(x, y, width, height);
-        this.label = label;
-        this.size = size;
-        this.color = color;
-    }
-
-    render(ctx) {
-        const {label, x, y, width} = this;
-        ctx.save();
-
-        ctx.font = `${this.size}px Verdana`;
-        ctx.fillStyle = this.color;
-        ctx.fillText(label, x, y, width);
-        ctx.restore(); 
     }
 }
