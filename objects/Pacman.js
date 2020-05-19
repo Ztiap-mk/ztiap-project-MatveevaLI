@@ -24,6 +24,9 @@ class Pacman extends BaseObject {
         this.counter = 0;
         this.currentFrameHeight = 1;
         this.score = 0;
+
+        this.movementHistory = [];
+        this.trackMovement = false;
     }
 
     handleMovement(pacman, newCoordinate) {
@@ -41,7 +44,7 @@ class Pacman extends BaseObject {
 
         this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type = Coordinate.CoordinateType.Empty;
         this.game.calculateLabyrinthPath();
-        console.log("score: " + this.score);
+        //console.log("score: " + this.score);
     }
 
     move(dt) {
@@ -55,9 +58,9 @@ class Pacman extends BaseObject {
         let deltaY = this.currentCoordinate.pxY;
         let newCoordinate = null;
 
-        if (keys["ArrowLeft"]) { deltaX-=3; }
+        if (keys["ArrowLeft"]) { deltaX -= 3; }
         if (keys["ArrowRight"]) { deltaX += quant + 3; deltaY += quant; }
-        if (keys["ArrowUp"]) { deltaY-=3; deltaX += quant; }
+        if (keys["ArrowUp"]) { deltaY -= 3; deltaX += quant; }
         if (keys["ArrowDown"]) { deltaY += quant + 3; deltaX += quant; }
 
         newCoordinate = this.grid.getCoordinateFromPX(deltaX, deltaY);
@@ -76,6 +79,16 @@ class Pacman extends BaseObject {
                 case Coordinate.CoordinateType.BigFood: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
                 default: throw "Error";
             }
+        }
+
+        if (this.trackMovement == true && this.game.objects[2].indexMovementHistory >= -1) {
+            
+            this.movementHistory.push({ x: newCoordinate.pxX, y: newCoordinate.pxY });
+
+            if (this.game.objects[2].indexMovementHistory == -1) { 
+                this.game.objects[2].indexMovementHistory = 0; 
+            }
+            console.log(`Track:` + this.trackMovement);
         }
     }
 
@@ -113,7 +126,7 @@ class Pacman extends BaseObject {
         this.counter = this.counter + .05;
 
         ctx.font = `20px Verdana`;
-        ctx.fillStyle =  'black';
+        ctx.fillStyle = 'black';
         ctx.fillText("Score " + this.score, canvas.width * 0.47, canvas.height * 0.97);
         ctx.restore();
     }
