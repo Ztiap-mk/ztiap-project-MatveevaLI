@@ -22,8 +22,12 @@ const SOUNDS = [
 
 let quant = 0;
 
+let noSound = true;
+
 var keys = {};
 var tick;
+
+let gameStartedOn = null;
 
 const KEY_EVENT_TYPES = {
 };
@@ -46,7 +50,6 @@ window.onkeyup = function (event) {
 class Game {
 
     constructor() {
-
         this.canvas = document.getElementById("canvas");
         this.ctx = canvas.getContext("2d");
         this.time = Date.now();

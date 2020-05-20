@@ -18,13 +18,10 @@ class StateManager {
     }
 
     init() {
-         
         const ctx = this.ctx;
         this.states = {
-            gameState: new GameState(this, ctx),
             info: new InfoState(this, ctx),
             controls: new ControlsState(this, ctx),
-            
             mainMenu: new MainMenu(this, ctx),
             worldEditor: new WorldEditor(this, ctx),
             pause: new Pause(this, ctx),
@@ -34,9 +31,12 @@ class StateManager {
     }
 
     changeState(state) {
-        const newState = this.states[state];
-        if (!newState) {
-            throw new Error(`State '${state}' not found`)
+        let newState = null;
+        if (state == StateManager.STATES.GAME) {
+            newState = new GameState(this, this.ctx); 
+        }
+        else {
+            newState = this.states[state];
         }
         this.currentState = newState;
     }

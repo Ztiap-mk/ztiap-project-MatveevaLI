@@ -8,13 +8,13 @@ class WorldEditor {
         this.fillPath = this.createFillPath(this.quant);
 
         this.EmptySpaceText = new TextButton(canvas.width * 0.1, canvas.height * 0.95, 200, 40, 20, 'Empty', 'black');
-        this.EmptySpaceButton = new ImageButton(canvas.width * 0.2, canvas.height * 0.9, 30, 40, resourceManager.getImageSource('soundOn'));
+        this.EmptySpaceButton = new ImageButton('emptySpaceTool', canvas.width * 0.2, canvas.height * 0.9, 30, 40, resourceManager.getImageSource('soundOn'));
         this.WallText = new TextButton(canvas.width * 0.3, canvas.height * 0.95, 200, 40, 20, 'Wall', 'black');
-        this.WallButton = new ImageButton(canvas.width * 0.4, canvas.height * 0.9, 30, 40, resourceManager.getImageSource('soundOn'));
+        this.WallButton = new ImageButton('WallTool', canvas.width * 0.4, canvas.height * 0.9, 30, 40, resourceManager.getImageSource('soundOn'));
         this.FoodText = new TextButton(canvas.width * 0.5, canvas.height * 0.95, 200, 40, 20, 'Food', 'black');
-        this.FoodButton = new ImageButton(canvas.width * 0.6, canvas.height * 0.9, 30, 40, resourceManager.getImageSource('soundOn'));
+        this.FoodButton = new ImageButton('FoodTool', canvas.width * 0.6, canvas.height * 0.9, 30, 40, resourceManager.getImageSource('soundOn'));
         this.BigFoodText = new TextButton(canvas.width * 0.7, canvas.height * 0.95, 200, 40, 20, 'Big F.', 'black');
-        this.BigFoodButton = new ImageButton(canvas.width * 0.8, canvas.height * 0.9, 30, 40, resourceManager.getImageSource('soundOn'));
+        this.BigFoodButton = new ImageButton('BigFoodTool', canvas.width * 0.8, canvas.height * 0.9, 30, 40, resourceManager.getImageSource('soundOn'));
     }
 
     createEmptyGrid(quant) {

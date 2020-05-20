@@ -30,7 +30,8 @@ class Coordinate {
         Empty: 0,
         Wall: 1,
         Food: 2,
-        BigFood: 3
+        BigFood: 3,
+        Cherry: 4
     }
 
     constructor(pxX, pxY, cellX, cellY, type) {

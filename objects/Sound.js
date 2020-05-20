@@ -2,16 +2,18 @@ class Sound {
     constructor(src) {
         this.sound = resourceManager.getSoundSource(src);
         this.isPlaying = false;
+        this.sound.volume = 0.1;
     }
 
     play() {
-        this.sound.play();
-        this.sound.muted = false;
+        this.sound.muted = noSound;
+        if (noSound == false) {
+            this.sound.play();
+        }
     }
 
     pause() {
-        // this.sound.pause();
-        this.sound.muted = true;
+        this.sound.pause();
     }
 
     playsound() {

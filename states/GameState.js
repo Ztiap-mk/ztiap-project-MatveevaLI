@@ -2,10 +2,15 @@ class GameState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
 
+        gameStartedOn = Date.now();
+
         this.background = resourceManager.getImageSource('bgpause');
         this.grid = new Grid();
         this.grid.redrawLabyrinthCallback = this.updateLabyrinthPath;
-        
+
+        this.randX = null;
+        this.randY = null;
+
         this.grid.LoadLevel("level1");
         quant = Math.floor(canvas.width / this.grid.CurrentLevel.length);
 
@@ -15,12 +20,14 @@ class GameState extends BaseState {
         const soundEating = new Sound('eating');
         const soundDie = new Sound('die');
 
+        this.cherryImg = null;
+
         this.calculateLabyrinthPath();
 
         this.cherryImage = resourceManager.getImageSource('cherry');
         this.foodImage = resourceManager.getImageSource('food');
 
-        const backButton = new TextButton(canvas.width * 0.17, canvas.height * 0.97, 300, 20,20, 'Back to Menu', 'black');
+        const backButton = new TextButton(canvas.width * 0.17, canvas.height * 0.97, 300, 20, 20, 'Back to Menu', 'black');
         backButton.onClick((ev) => {
             this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
         });
@@ -69,15 +76,39 @@ class GameState extends BaseState {
         }
     }
 
+    getRand() {
+        this.randX = Math.trunc(Math.random() * quant);
+        this.randY = Math.trunc(Math.random() * quant);
+        if (this.grid.CurrentLevel[this.randY][this.randX].type != Coordinate.CoordinateType.Empty) {
+            this.getRand();
+        }
+    }
+
+    renderCherry(ctx) {
+        if (Math.trunc((Date.now() - gameStartedOn) / 1000) >= 7 && 20 >= Math.trunc((Date.now() - gameStartedOn) / 1000)) {
+            if (this.cherryImg == null) {
+                this.getRand();
+                this.grid.CurrentLevel[this.randY][this.randX].type = Coordinate.CoordinateType.Cherry;
+                const pxX = this.randX * quant;
+                const pxY = this.randY * quant;
+                this.cherryImg = new ImageButton('CherryImg', pxX, pxY, quant, quant, resourceManager.getImageSource('cherry'));
+            }
+            if (this.grid.CurrentLevel[this.randY][this.randX].type == Coordinate.CoordinateType.Cherry) {
+                this.cherryImg.render(ctx);
+            }
+        }
+    }
+
     render(ctx) {
         this.ctx.drawImage(this.background, 0, 0, canvas.width, 500);
         ctx.fillStyle = '#151584';
         ctx.fill(this.labyrinthPath);
- 
+
         for (let index = 0; index < this.objects.length; index++) {
             const element = this.objects[index];
             element.render(this.ctx);
         }
+        this.renderCherry(ctx);
     }
 
     handleEvent(ev) {

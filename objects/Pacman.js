@@ -14,6 +14,8 @@ class Pacman extends BaseObject {
         this.canvas = document.getElementById("canvas");
         this.image = resourceManager.getImageSource('pacman');
 
+        this.foodEatenSound = new Sound('eating');
+
         this._currentCoordinate = null;
         this.currentCoordinate = game.grid.getCoordinateFromPX(150, 250);
         this.height = quant;
@@ -37,14 +39,16 @@ class Pacman extends BaseObject {
         if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.Food) {
             this.score += 10;
         }
-
-        if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.BigFood) {
+        else if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.BigFood) {
             this.score += 100;
         }
+        else if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.Cherry){
+            this.score += 1000;
+        }
 
+        this.foodEatenSound.play();
         this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type = Coordinate.CoordinateType.Empty;
         this.game.calculateLabyrinthPath();
-        //console.log("score: " + this.score);
     }
 
     move(dt) {
@@ -77,16 +81,15 @@ class Pacman extends BaseObject {
                 case Coordinate.CoordinateType.Wall: break;
                 case Coordinate.CoordinateType.Food: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
                 case Coordinate.CoordinateType.BigFood: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
+                case Coordinate.CoordinateType.Cherry: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
                 default: throw "Error";
             }
         }
 
         if (this.trackMovement == true && this.game.objects[2].indexMovementHistory >= -1) {
-            
             this.movementHistory.push({ x: newCoordinate.pxX, y: newCoordinate.pxY });
-
-            if (this.game.objects[2].indexMovementHistory == -1) { 
-                this.game.objects[2].indexMovementHistory = 0; 
+            if (this.game.objects[2].indexMovementHistory == -1) {
+                this.game.objects[2].indexMovementHistory = 0;
             }
             console.log(`Track:` + this.trackMovement);
         }

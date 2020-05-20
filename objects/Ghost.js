@@ -78,10 +78,14 @@ class Ghost extends BaseObject {
         ];
     }
 
-    killPacman(CoordinatePacmanpxX, CoordinatePacmanpxY) {
+    gameOver(){
+        this.game.stateManager.changeState(StateManager.STATES.GAMEOVER);
+    }
 
+    killPacman(CoordinatePacmanpxX, CoordinatePacmanpxY) {
+        this.gameOver();
         if (this.currentCoordinate.pxX == CoordinatePacmanpxX && this.currentCoordinate.pxY == CoordinatePacmanpxY) {
-            debugger;
+            gameOver();
         }
 
         let newWaypointElement = this.game.objects[3].movementHistory[this.indexMovementHistory];

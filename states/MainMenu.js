@@ -6,15 +6,25 @@ class MainMenu extends BaseState {
         this.startSound = resourceManager.getSoundSource('start');
 
         const sound = new Sound('start');
-        this.isMuted = true;
+        sound.sound.loop = true;
+        sound.playsound();
 
-        const soundOffButton = new ImageButton(450, 500, 30, 30, resourceManager.getImageSource('soundOff'));
+        const soundOffButton = new ImageButton('SoundOffButton', 450, 500, 30, 30, resourceManager.getImageSource('soundOff'));
+        const soundOnButton = new ImageButton('SoundOnButton', 450, 500, 30, 30, resourceManager.getImageSource('soundOn'));
+
         soundOffButton.onClick((ev) => {
-            sound.playsound();
+            noSound = !noSound;
+            if (sound.sound.paused) {
+                sound.play();
+            } else {
+                sound.pause();
+            }
         });
 
         const startGameButton = new TextButton(canvas.width / 2, canvas.height / 2, 200, 40, 40, 'New game', 'yellow');
         startGameButton.onClick((ev) => {
+            sound.pause();
+            sound.sound.currentTime = 0;
             this.stateManager.changeState(StateManager.STATES.GAME);
         });
 
@@ -42,15 +52,23 @@ class MainMenu extends BaseState {
             infoButton,
             controlsButton,
             soundOffButton,
+            soundOnButton,
             startGameButton,
             editorButton,
-            gameoverButton,
+            gameoverButton
         ];
     }
 
     render(ctx) {
         this.ctx.drawImage(this.bgStartImage, 0, 0, canvas.width, canvas.height);
-        this.objects.forEach(object => object.render(this.ctx));
+        this.objects.forEach((object) => {
+            if (object instanceof ImageButton) {
+                if (object.id == 'SoundOffButton' && noSound || object.id == 'SoundOnButton' && !noSound) {
+                    return;
+                }
+            }
+            object.render(this.ctx);
+        });
     }
     handleEvent(ev) {
         this.objects.forEach((object) => {
