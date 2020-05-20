@@ -9,7 +9,7 @@ const IMAGES = [
     { name: 'info', src: 'img/bgInfo.png' },
     { name: 'controls', src: 'img/bgControls.png' },
     { name: 'gamePause', src: 'img/bgPause.png' },
-    { name: 'gameOver', src: 'img/bgGameover.png' },
+    { name: 'gameOver', src: 'img/bgGameOver.png' },
     { name: 'gameEnd', src: 'img/bgGameEnd.png' },
     { name: 'nextLevel', src: 'img/bgNextLevel.png' },
 ];
