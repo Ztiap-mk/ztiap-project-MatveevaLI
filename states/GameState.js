@@ -10,7 +10,7 @@ class GameState extends BaseState {
 
         this.randX = null;
         this.randY = null;
-         
+
         if (killPacman == false && score == 0 && lastLevel == false) {
             this.grid.LoadLevel("level1");
             foodLeft = this.grid.getFoodCount("level1");
@@ -21,18 +21,18 @@ class GameState extends BaseState {
             this.grid.LoadLevel("level1");
             score = 0;
         }
-        
+
         else if (killPacman == false && foodLeft == 0 && lastLevel == false) {
             this.grid.LoadLevel("level2");
             foodLeft = this.grid.getFoodCount("level2");
-            lastLevel = true; 
+            lastLevel = true;
         }
 
-        else  {
+        else {
             this.grid.LoadLevel("level1");
             score = 0;
         }
-       
+
         quant = Math.floor(canvas.width / this.grid.CurrentLevel.length);
 
         const soundEating = new Sound('eating');
@@ -46,14 +46,7 @@ class GameState extends BaseState {
         this.foodImage = resourceManager.getImageSource('food');
 
         const backButton = new TextButton(canvas.width * 0.17, canvas.height * 0.97, 300, 20, 20, 'Back to Menu', 'black');
-        backButton.onClick((ev) => {
-            this.stateManager.changeState(StateManager.STATES.MAINMENU);
-        });
-
         const pauseButton = new TextButton(canvas.width * 0.9, canvas.height * 0.97, 300, 20, 20, 'Pause', 'black');
-        pauseButton.onClick((ev) => {
-            this.stateManager.changeState(StateManager.STATES.PAUSE);
-        });
 
         const ghost = new Ghost(this);
         const pacman = new Pacman(this);
@@ -74,15 +67,16 @@ class GameState extends BaseState {
             const row = this.grid.CurrentLevel[x];
             for (let y = 0; y < row.length; y++) {
                 const cell = row[y];
-                //if (x == 14 && y == 9) console.log("Labyrint x = " + this.grid.CurrentLevel[x][y].x + " y = " + this.grid.CurrentLevel[x][y].y + " type = " + this.grid.CurrentLevel[x][y].type);
                 if (cell.type == Coordinate.CoordinateType.Wall) {
                     this.labyrinthPath.rect(y * quant, x * quant, quant, quant);
                 }
                 if (cell.type == Coordinate.CoordinateType.Food) {
-                    this.labyrinthPath.arc(y * quant, x * quant, 5, 0, 2 * Math.PI);
+                    this.labyrinthPath.moveTo(y * quant + quant / 2, x * quant + quant / 2);
+                    this.labyrinthPath.arc(y * quant + quant / 2, x * quant + quant / 2, 5, 0, 2 * Math.PI);
                 }
                 if (cell.type == Coordinate.CoordinateType.BigFood) {
-                    this.labyrinthPath.arc(y * quant, x * quant, 8, 0, 2 * Math.PI);
+                    this.labyrinthPath.moveTo(y * quant + quant / 2, x * quant + quant / 2);
+                    this.labyrinthPath.arc(y * quant + quant / 2, x * quant + quant / 2, 8, 0, 2 * Math.PI);
                 }
             }
         }
@@ -120,6 +114,7 @@ class GameState extends BaseState {
 
     render(ctx) {
         this.ctx.drawImage(this.background, 0, 0, canvas.width, 500);
+
         ctx.fillStyle = '#151584';
         ctx.fill(this.labyrinthPath);
 
@@ -130,11 +125,26 @@ class GameState extends BaseState {
         this.renderCherry(ctx);
     }
 
+    processButtons(x, y) {
+        if ((x >= canvas.width * 0.17 - 90 && x <= canvas.width * 0.17 + 80) && (y >= canvas.height * 0.97 - 20 && y <= canvas.height * 0.98)) {
+            this.stateManager.changeState(StateManager.STATES.MAINMENU);
+        }
+        else if ((x >= canvas.width * 0.9 - 40 && x <= canvas.width * 0.9 + 40) && (y >= canvas.height * 0.97 - 20 && y <= canvas.height * 0.98)) {
+            this.stateManager.changeState(StateManager.STATES.PAUSE);
+        }
+    }
+
     handleEvent(ev) {
+        if (ev.type == "click") {
+            var rect = canvas.getBoundingClientRect();
+            var x = ev.clientX - rect.left;
+            var y = ev.clientY - rect.top;
+            this.processButtons(x, y);
+        }
+
         this.objects.forEach((object) => {
             object.handleEvent(ev);
         });
-
 
         if (isKeyPressEvent(ev) && ev.key === 'q') {
             this.stateManager.changeState(StateManager.STATES.MAINMENU);

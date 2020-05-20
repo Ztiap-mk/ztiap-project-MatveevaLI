@@ -17,7 +17,7 @@ class Pacman extends BaseObject {
         this.foodEatenSound = new Sound('eating');
 
         this._currentCoordinate = null;
-        this.currentCoordinate = game.grid.getCoordinateFromPX(150, 250);
+        this.currentCoordinate = game.grid.getCoordinateFromPX(250, 400);
         this.height = quant;
         this.width = quant;
         this.currentLevel = game.grid.currentLevel;
@@ -25,7 +25,7 @@ class Pacman extends BaseObject {
         this.grid = game.grid;
         this.counter = 0;
         this.currentFrameHeight = 1;
-         
+
         this.movementHistory = [];
         this.trackMovement = false;
     }
@@ -33,74 +33,73 @@ class Pacman extends BaseObject {
     handleMovement(pacman, newCoordinate) {
         pacman.currentCoordinate = newCoordinate;
     }
-    
-    nextLevel () {
+
+    nextLevel() {
         if (lastLevel == true) {
             this.game.stateManager.changeState(StateManager.STATES.GAMEEND);
         }
         else {
             this.game.stateManager.changeState(StateManager.STATES.NEXTLEVEL);
-        } 
+        }
     }
     handleFood(newCoordinate) {
         if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.Food) {
-        console.log(`type before: ` + this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type);
-           score += 10;
-           foodLeft--;
+            score += 10;
+            foodLeft--;
         }
         else if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.BigFood) {
-        console.log(`type before: ` + this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type);
-           score += 100;
-           foodLeft--;
+            score += 100;
+            foodLeft--;
         }
-        else if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.Cherry){
+        else if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.Cherry) {
             score += 1000;
         }
-        console.log('Food left after eating: ' + foodLeft);
-    
+
         this.foodEatenSound.play();
         this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type = Coordinate.CoordinateType.Empty;
 
         this.game.calculateLabyrinthPath();
 
-        console.log(`type after: ` + this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type);
         if (foodLeft == 0) {
             this.nextLevel();
-        } 
+        }
     }
 
     move(dt) {
-
         // Prevent multiple keys hit together
         if (Object.keys(keys).filter(key => key.indexOf("Arrow") > -1 && keys[key] == true).length != 1) {
             return;
         }
 
         let deltaX = this.currentCoordinate.pxX;
-        
         let deltaY = this.currentCoordinate.pxY;
-       
-         
-        
+        let deltaXOffset = this.currentCoordinate.pxX;
+        let deltaYOffset = this.currentCoordinate.pxY;
         let newCoordinate = null;
-        
-        if (keys["ArrowLeft"]) { deltaX += -2;   }
-        if (keys["ArrowRight"]) { deltaX += quant + 1; deltaY += quant;   }
-        if (keys["ArrowUp"]) { deltaY -= 1; deltaX += quant; }
-        if (keys["ArrowDown"]) { deltaY += quant + 1; deltaX += quant; }
+        let newCoordinateOffset = null;
 
+        if (keys["ArrowLeft"]) { deltaX--; deltaY += quant; }
+        if (keys["ArrowRight"]) { deltaX += quant + 1; deltaY += quant; }
+        if (keys["ArrowUp"]) { deltaX += quant; deltaY -= 1; }
+        if (keys["ArrowDown"]) { deltaX += quant; deltaY += quant + 1; }
         newCoordinate = this.grid.getCoordinateFromPX(deltaX, deltaY);
 
-        // Cancel Collision 
-    
+        // Cancel Collision
+        if (keys["ArrowLeft"]) { newCoordinate.pxY -= quant; }
         if (keys["ArrowRight"]) { newCoordinate.pxX -= quant; newCoordinate.pxY -= quant; }
         if (keys["ArrowUp"]) { newCoordinate.pxX -= quant; }
         if (keys["ArrowDown"]) { newCoordinate.pxX -= quant; newCoordinate.pxY -= quant; }
-        
-        if (newCoordinate) {
 
+        // Process Offset
+        if (keys["ArrowLeft"]) { deltaXOffset--; }
+        if (keys["ArrowRight"]) { deltaXOffset += quant + 1; }
+        if (keys["ArrowUp"]) { deltaYOffset--; }
+        if (keys["ArrowDown"]) { deltaYOffset += quant + 1; }
+        newCoordinateOffset = this.grid.getCoordinateFromPX(deltaXOffset, deltaYOffset);
+
+        if (newCoordinate && newCoordinateOffset.type != Coordinate.CoordinateType.Wall) {
             switch (newCoordinate.type) {
-                case Coordinate.CoordinateType.Empty: this.handleMovement(this, newCoordinate);break;
+                case Coordinate.CoordinateType.Empty: this.handleMovement(this, newCoordinate); break;
                 case Coordinate.CoordinateType.Wall: break;
                 case Coordinate.CoordinateType.Food: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
                 case Coordinate.CoordinateType.BigFood: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
@@ -114,7 +113,6 @@ class Pacman extends BaseObject {
             if (this.game.objects[2].indexMovementHistory == -1) {
                 this.game.objects[2].indexMovementHistory = 0;
             }
-            console.log(`Track:` + this.trackMovement);
         }
     }
 

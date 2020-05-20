@@ -20,7 +20,13 @@ class Ghost extends BaseObject {
         this.currentWaypointIndex = 0;
 
         this._currentCoordinate = null;
-        this.waypoint = this.initializeWaypoint();
+        if (lastLevel == false) {
+            this.waypoint = this.initializeWaypoint();
+        }
+        else {
+            this.waypoint = this.initializeWaypointLastLevel();
+        }
+
         this.currentCoordinate = this.game.grid.getPXCoordinateFromCell(this.waypoint[0].x, this.waypoint[0].y);
 
         this.indexMovementHistory = -1;
@@ -31,12 +37,38 @@ class Ghost extends BaseObject {
 
     initializeWaypoint() {
 
+        return [         
+            { x: 10, y: 10 },
+            { x: 10, y: 2 },
+            { x: 19, y: 2 },
+            { x: 19, y: 13 },
+            { x: 2, y: 13 },
+            { x: 2, y: 19 },
+            { x: 20, y: 19 },
+            { x: 2, y: 19 },
+            { x: 2, y: 7 },
+            { x: 10, y: 7 },
+            { x: 10, y: 10 },
+        ];
+    }
+
+    initializeWaypointLastLevel() {
+
         return [
-            { x: 4, y: 4 },
-            { x: 10, y: 1 },
-            { x: 10, y: 8 },
-            { x: 1, y: 8 },
-            { x: 4, y: 4 }
+            { x: 10, y: 10 },
+            { x: 10, y: 15 },
+            { x: 2, y: 15 },
+            { x: 2, y: 8 },
+            { x: 7, y: 8 },
+            { x: 7, y: 2 },
+            { x: 16, y: 2 },
+            { x: 16, y: 4 },
+            { x: 20, y: 4 },
+            { x: 20, y: 19 },
+            { x: 12, y: 19 },
+            { x: 12, y: 16 },
+            { x: 10, y: 16},
+            { x: 10, y: 10},
         ];
     }
 

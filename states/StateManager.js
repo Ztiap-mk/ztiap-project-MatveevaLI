@@ -34,15 +34,12 @@ class StateManager {
         this.currentState = this.states.mainMenu;
     }
 
+    initGame() {
+        this.states[StateManager.STATES.GAME] = new GameState(this, this.ctx);
+    }
+
     changeState(state) {
-        let newState = null;
-        if (state == StateManager.STATES.GAME) {
-            newState = new GameState(this, this.ctx); 
-        }
-        else {
-            newState = this.states[state];
-        }
-        this.currentState = newState;
+        this.currentState = this.states[state];
     }
 
     update(dt) {

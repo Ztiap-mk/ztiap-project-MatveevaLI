@@ -5,43 +5,26 @@ class MainMenu extends BaseState {
         this.bgStartImage = resourceManager.getImageSource('bgStart');
         this.startSound = resourceManager.getSoundSource('start');
 
-        const sound = new Sound('start');
-        sound.sound.loop = true;
-        sound.playsound();
+        this.sound = new Sound('start');
+        this.sound.sound.loop = true;
+        this.sound.playsound();
 
         const soundOffButton = new ImageButton('SoundOffButton', 450, 500, 30, 30, resourceManager.getImageSource('soundOff'));
         const soundOnButton = new ImageButton('SoundOnButton', 450, 500, 30, 30, resourceManager.getImageSource('soundOn'));
 
         soundOffButton.onClick((ev) => {
             noSound = !noSound;
-            if (sound.sound.paused) {
-                sound.play();
+            if (this.sound.sound.paused) {
+                this.sound.play();
             } else {
-                sound.pause();
+                this.sound.pause();
             }
         });
 
         const startGameButton = new TextButton(canvas.width / 2, canvas.height / 2, 200, 40, 40, 'New game', 'yellow');
-        startGameButton.onClick((ev) => {
-            sound.pause();
-            sound.sound.currentTime = 0;
-            this.stateManager.changeState(StateManager.STATES.GAME);
-        });
-
         const infoButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.1 * canvas.height, 200, 40, 40, 'Info', 'yellow');
-        infoButton.onClick((ev) => {
-            this.stateManager.changeState(StateManager.STATES.INFO);
-        });
-
         const controlsButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.2 * canvas.height, 200, 40, 40, 'Controls', 'yellow');
-        controlsButton.onClick((ev) => {
-            this.stateManager.changeState(StateManager.STATES.CONTROLS);
-        });
-
         const editorButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.3 * canvas.height, 240, 40, 40, 'World Editor', 'yellow');
-        editorButton.onClick((ev) => {
-            this.stateManager.changeState(StateManager.STATES.WORLDEDITOR);
-        });
 
         this.objects = [
             infoButton,
@@ -64,10 +47,32 @@ class MainMenu extends BaseState {
             object.render(this.ctx);
         });
     }
+
+    processButtons(x, y) {
+        if ((x >= canvas.width / 2 - 100 && x <= canvas.width / 2 + 100) && (y >= canvas.height / 2 - 20 && y <= canvas.height / 2 + 20)) {
+            this.sound.pause();
+            this.sound.sound.currentTime = 0;
+            this.stateManager.initGame();
+            this.stateManager.changeState(StateManager.STATES.GAME);
+        }
+        else if ((x >= canvas.width / 2 - 100 && x <= canvas.width / 2 + 100) && (y >= (canvas.height / 2 + 0.1 * canvas.height) - 20 && y <= (canvas.height / 2 + 0.1 * canvas.height) + 20)) {
+            this.stateManager.changeState(StateManager.STATES.INFO);
+        }
+        else if ((x >= canvas.width / 2 - 100 && x <= canvas.width / 2 + 100) && (y >= (canvas.height / 2 + 0.2 * canvas.height) - 20 && y <= (canvas.height / 2 + 0.2 * canvas.height) + 20)) {
+            this.stateManager.changeState(StateManager.STATES.CONTROLS);
+        }
+        else if ((x >= canvas.width / 2 - 120 && x <= canvas.width / 2 + 120) && (y >= (canvas.height / 2 + 0.3 * canvas.height) - 20 && y <= (canvas.height / 2 + 0.3 * canvas.height) + 20)) {
+            this.stateManager.changeState(StateManager.STATES.WORLDEDITOR);
+        }
+    }
+
     handleEvent(ev) {
-        this.objects.forEach((object) => {
-            object.handleEvent(ev);
-        });
+        if (ev.type == "click") {
+            var rect = canvas.getBoundingClientRect();
+            var x = ev.clientX - rect.left;
+            var y = ev.clientY - rect.top;
+            this.processButtons(x, y);
+        }
 
         if (isKeyPressEvent(ev) && ev.key === 'g') {
             this.stateManager.changeState(StateManager.STATES.GAME);

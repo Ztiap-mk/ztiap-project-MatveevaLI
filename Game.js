@@ -6,12 +6,16 @@ const IMAGES = [
     { name: 'soundOff', src: 'img/mute.png' },
     { name: 'soundOn', src: 'img/sound.png' },
     { name: 'food', src: 'img/dot.png' },
+    { name: 'BigFood', src: 'img/megaDot.png' },
     { name: 'info', src: 'img/bgInfo.png' },
     { name: 'controls', src: 'img/bgControls.png' },
     { name: 'gamePause', src: 'img/bgPause.png' },
     { name: 'gameOver', src: 'img/bgGameOver.png' },
     { name: 'gameEnd', src: 'img/bgGameEnd.png' },
     { name: 'nextLevel', src: 'img/bgNextLevel.png' },
+    { name: 'saveLevel', src: 'img/save.png' },
+    { name: 'wall', src: 'img/wall.png' },
+    { name: 'eraser', src: 'img/eraser.png' }
 ];
 
 const SOUNDS = [
