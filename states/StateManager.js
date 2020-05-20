@@ -1,12 +1,14 @@
 class StateManager {
     static STATES = {
         GAME: 'gameState',
-        MAIN_MENU: 'mainMenu',
+        MAINMENU: 'mainMenu',
         INFO: 'info',
         CONTROLS: 'controls',
-        WORLD_EDITOR: 'worldEditor',
+        WORLDEDITOR: 'worldEditor',
         PAUSE: 'pause',
         GAMEOVER: 'gameover',
+        NEXTLEVEL: 'nextLevel',
+        GAMEEND: 'gameEnd',
     }
 
     states = {};
@@ -26,6 +28,8 @@ class StateManager {
             worldEditor: new WorldEditor(this, ctx),
             pause: new Pause(this, ctx),
             gameover: new GameOver(this, ctx),
+            nextLevel: new NextLevel(this, ctx),
+            gameEnd: new GameEnd(this, ctx),
         };
         this.currentState = this.states.mainMenu;
     }

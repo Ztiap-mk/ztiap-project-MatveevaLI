@@ -1,17 +1,17 @@
 const IMAGES = [
-    { name: 'pacman', src: 'img/pacman_sheet.png' },
-    { name: 'ghost', src: 'img/red.png' },
+    { name: 'pacman', src: 'img/pacmanSheet.png' },
+    { name: 'ghost', src: 'img/ghost.png' },
     { name: 'cherry', src: 'img/cherry.png' },
-    { name: 'fg', src: 'img/fg.png' },
-    { name: 'bg', src: 'img/bg.png' },
-    { name: 'bgStart', src: 'img/bg_start.png' },
+    { name: 'bgStart', src: 'img/bgStart.png' },
     { name: 'soundOff', src: 'img/mute.png' },
     { name: 'soundOn', src: 'img/sound.png' },
     { name: 'food', src: 'img/dot.png' },
-    { name: 'info', src: 'img/bg_info.png' },
-    { name: 'controls', src: 'img/bg_controls.png' },
-    { name: 'bgpause', src: 'img/bg_pause.png' },
-    { name: 'gameover', src: 'img/gameover.png' },
+    { name: 'info', src: 'img/bgInfo.png' },
+    { name: 'controls', src: 'img/bgControls.png' },
+    { name: 'gamePause', src: 'img/bgPause.png' },
+    { name: 'gameOver', src: 'img/bgGameover.png' },
+    { name: 'gameEnd', src: 'img/bgGameEnd.png' },
+    { name: 'nextLevel', src: 'img/bgNextLevel.png' },
 ];
 
 const SOUNDS = [
@@ -20,13 +20,14 @@ const SOUNDS = [
     { name: 'die', src: 'audio/die.mp3' },
 ];
 
+let killPacman = false;
 let quant = 0;
-
+let score = 0;
 let noSound = true;
+let foodLeft = 0;
+let lastLevel = false;
 
 var keys = {};
-var tick;
-
 let gameStartedOn = null;
 
 const KEY_EVENT_TYPES = {
@@ -35,9 +36,6 @@ const KEY_EVENT_TYPES = {
 const MOUSE_EVENT_TYPES = {
 };
 
-function setText() {
-    text.innerHTML = "Tick: " + tick
-}
 
 window.onkeydown = function (event) {
     keys[event.key] = true;

@@ -3,9 +3,9 @@ class InfoState extends BaseState {
         super(manager, ctx);
         this.infoImage = resourceManager.getImageSource('info');
 
-        const backButton = new TextButton(180, 500, 200, 40, 40, 'Back', 'yellow');
+        const backButton = new TextButton(canvas.width*0.49, canvas.height*0.9, 200, 40, 40, 'Back', 'yellow');
         backButton.onClick((ev) => {
-            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAINMENU);
         });
 
 
@@ -23,7 +23,7 @@ class InfoState extends BaseState {
             object.handleEvent(ev);
         });
         if (isKeyPressEvent(ev) && ev.key === 'g') {
-            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAINMENU);
         }
     }
 }

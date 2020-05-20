@@ -4,18 +4,36 @@ class GameState extends BaseState {
 
         gameStartedOn = Date.now();
 
-        this.background = resourceManager.getImageSource('bgpause');
+        this.background = resourceManager.getImageSource('gamePause');
         this.grid = new Grid();
         this.grid.redrawLabyrinthCallback = this.updateLabyrinthPath;
 
         this.randX = null;
         this.randY = null;
+         
+        if (killPacman == false && score == 0 && lastLevel == false) {
+            this.grid.LoadLevel("level1");
+            foodLeft = this.grid.getFoodCount("level1");
+            console.log('Food left : ' + foodLeft);
+        }
+        else if (killPacman == true && lastLevel == false) {
+            killPacman = false;
+            this.grid.LoadLevel("level1");
+            score = 0;
+        }
+        
+        else if (killPacman == false && foodLeft == 0 && lastLevel == false) {
+            this.grid.LoadLevel("level2");
+            foodLeft = this.grid.getFoodCount("level2");
+            lastLevel = true; 
+        }
 
-        this.grid.LoadLevel("level1");
+        else  {
+            this.grid.LoadLevel("level1");
+            score = 0;
+        }
+       
         quant = Math.floor(canvas.width / this.grid.CurrentLevel.length);
-
-        this.bgImage = resourceManager.getImageSource('bg');
-        this.fgImage = resourceManager.getImageSource('fg');
 
         const soundEating = new Sound('eating');
         const soundDie = new Sound('die');
@@ -29,7 +47,7 @@ class GameState extends BaseState {
 
         const backButton = new TextButton(canvas.width * 0.17, canvas.height * 0.97, 300, 20, 20, 'Back to Menu', 'black');
         backButton.onClick((ev) => {
-            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAINMENU);
         });
 
         const pauseButton = new TextButton(canvas.width * 0.9, canvas.height * 0.97, 300, 20, 20, 'Pause', 'black');
@@ -46,6 +64,7 @@ class GameState extends BaseState {
             ghost,
             pacman,
         ];
+
     }
 
     calculateLabyrinthPath() {
@@ -55,7 +74,7 @@ class GameState extends BaseState {
             const row = this.grid.CurrentLevel[x];
             for (let y = 0; y < row.length; y++) {
                 const cell = row[y];
-                if (x == 14 && y == 9) console.log("Labyrint x = " + this.grid.CurrentLevel[x][y].x + " y = " + this.grid.CurrentLevel[x][y].y + " type = " + this.grid.CurrentLevel[x][y].type);
+                //if (x == 14 && y == 9) console.log("Labyrint x = " + this.grid.CurrentLevel[x][y].x + " y = " + this.grid.CurrentLevel[x][y].y + " type = " + this.grid.CurrentLevel[x][y].type);
                 if (cell.type == Coordinate.CoordinateType.Wall) {
                     this.labyrinthPath.rect(y * quant, x * quant, quant, quant);
                 }
@@ -118,7 +137,7 @@ class GameState extends BaseState {
 
 
         if (isKeyPressEvent(ev) && ev.key === 'q') {
-            this.stateManager.changeState(StateManager.STATES.MAIN_MENU);
+            this.stateManager.changeState(StateManager.STATES.MAINMENU);
         }
 
         if (isKeyPressEvent(ev) && ev.key === 'p') {

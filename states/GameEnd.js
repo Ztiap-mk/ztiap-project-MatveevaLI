@@ -1,8 +1,9 @@
-class ControlsState extends BaseState {
+class GameEnd extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
-        this.controlsImage = resourceManager.getImageSource('controls');
-        const backButton = new TextButton(canvas.width * 0.49, canvas.height * 0.9, 200, 40, 40, 'Back', 'yellow');
+
+        this.GameEnd = resourceManager.getImageSource('gameEnd');
+        const backButton = new TextButton(canvas.width * 0.5, canvas.height * 0.48, 200, 30, 30, 'Main menu', 'yellow');
         backButton.onClick((ev) => {
             this.stateManager.changeState(StateManager.STATES.MAINMENU);
         });
@@ -13,10 +14,10 @@ class ControlsState extends BaseState {
     }
 
     render(ctx) {
-        this.ctx.drawImage(this.controlsImage, 0, 0, canvas.width, canvas.height);
+        this.ctx.drawImage(this.GameEnd, 0, 0, canvas.width, canvas.height);
         this.objects.forEach(object => object.render(this.ctx));
     }
-
+    
     handleEvent(ev) {
         this.objects.forEach((object) => {
             object.handleEvent(ev);

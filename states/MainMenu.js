@@ -38,14 +38,9 @@ class MainMenu extends BaseState {
             this.stateManager.changeState(StateManager.STATES.CONTROLS);
         });
 
-        const editorButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.3 * canvas.height, 200, 40, 40, 'World Editor', 'yellow');
+        const editorButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.3 * canvas.height, 240, 40, 40, 'World Editor', 'yellow');
         editorButton.onClick((ev) => {
-            this.stateManager.changeState(StateManager.STATES.WORLD_EDITOR);
-        });
-
-        const gameoverButton = new TextButton(canvas.width / 2, canvas.height / 2 + 0.4 * canvas.height, 200, 40, 40, 'Game Over', 'yellow');
-        gameoverButton.onClick((ev) => {
-            this.stateManager.changeState(StateManager.STATES.GAMEOVER);
+            this.stateManager.changeState(StateManager.STATES.WORLDEDITOR);
         });
 
         this.objects = [
@@ -55,7 +50,6 @@ class MainMenu extends BaseState {
             soundOnButton,
             startGameButton,
             editorButton,
-            gameoverButton
         ];
     }
 

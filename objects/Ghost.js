@@ -9,13 +9,14 @@ class Ghost extends BaseObject {
     }
 
     constructor(game) {
-        super(null, null, 40, 40);
+        super(null, null, quant, quant);
         this.canvas = document.getElementById("canvas");
         this.game = game;
         this.grid = game.grid;
-        var movableNodes = this.calculateMovableNodes();
+
         this.image = resourceManager.getImageSource('ghost');
 
+        this.dieSound = new Sound('die');
         this.currentWaypointIndex = 0;
 
         this._currentCoordinate = null;
@@ -28,64 +29,28 @@ class Ghost extends BaseObject {
     handleEvent(ev) {
     }
 
-    calculateMovableNodes() {
-        var movableNodes = [];
-        for (let y = 0; y < this.grid.CurrentLevel.length; y++) {
-            for (let x = 0; x < this.grid.CurrentLevel[y].length; x++) {
-                const cur = this.grid.CurrentLevel[y][x];
-                if (cur && cur.type != Coordinate.CoordinateType.Wall) {
-                    const curPX = this.grid.CurrentLevel[y][x + 1];
-                    const curMX = this.grid.CurrentLevel[y][x - 1];
-                    const curPY = this.grid.CurrentLevel[y + 1][x];
-                    const curMY = this.grid.CurrentLevel[y - 1][x];
-                    if ((curPY && curPY.type != Coordinate.CoordinateType.Wall) || (curMY && curMY.type != Coordinate.CoordinateType.Wall)) {
-                        if ((curPX && curPX.type != Coordinate.CoordinateType.Wall) || (curMX && curMX.type != Coordinate.CoordinateType.Wall)) {
-                            movableNodes.push(this.grid.CurrentLevel[y][x]);
-                        }
-                    }
-                }
-            }
-        }
-        return movableNodes;
-    }
-
-    findShortestPath(start, end, existingPathes, currentPath) {
-        existingPathes = [];
-        if (currentPath == null) {
-            currentPath.nodes = [start];
-            currentPath.length = 0;
-        }
-
-        let i = 0;
-        for (let i = 0; i < this.grid.CurrentLevel.length - start.cellX; i++) {
-            if (this.grid.CurrentLevel[start.cellY][start.cellX + i].type == Coordinate.CoordinateType.Wall) {
-                break;
-            }
-        }
-        var endNode = this.grid.CurrentLevel[start.cellY][start.cellX + i];
-        currentPath.nodes.push(endNode);
-        currentPath.length += i;
-    }
-
     initializeWaypoint() {
 
         return [
-            { x: 1, y: 1 },
+            { x: 4, y: 4 },
             { x: 10, y: 1 },
             { x: 10, y: 8 },
             { x: 1, y: 8 },
-            { x: 1, y: 1 }
+            { x: 4, y: 4 }
         ];
     }
 
-    gameOver(){
+    gameOver() {
+        this.dieSound.play();
+        killPacman = true;
         this.game.stateManager.changeState(StateManager.STATES.GAMEOVER);
     }
 
     killPacman(CoordinatePacmanpxX, CoordinatePacmanpxY) {
-        this.gameOver();
+
         if (this.currentCoordinate.pxX == CoordinatePacmanpxX && this.currentCoordinate.pxY == CoordinatePacmanpxY) {
-            gameOver();
+
+            this.gameOver();
         }
 
         let newWaypointElement = this.game.objects[3].movementHistory[this.indexMovementHistory];
@@ -120,14 +85,21 @@ class Ghost extends BaseObject {
                 step++;
             }
         }
+        if ((this.currentCoordinate.pxX != CoordinatePacmanpxX) || (this.currentCoordinate.pxY != CoordinatePacmanpxY)) {
+            if (this.currentCoordinate.pxY == newCoordinate.pxY && this.currentCoordinate.pxX == newCoordinate.pxX) {
 
-        if (this.currentCoordinate.pxY == newCoordinate.pxY && this.currentCoordinate.pxX == newCoordinate.pxX) {
-            this.indexMovementHistory++; 
-            while (this.game.objects[3].movementHistory[this.indexMovementHistory].x == this.game.objects[3].movementHistory[this.indexMovementHistory+1].x
-               &&  this.game.objects[3].movementHistory[this.indexMovementHistory].y ==  this.game.objects[3].movementHistory[this.indexMovementHistory+1].y ) { 
-                this.indexMovementHistory++; 
+                this.indexMovementHistory++;
+
+                if (this.indexMovementHistory < this.game.objects[3].movementHistory[this.indexMovementHistory].length) {
+                    while ((this.game.objects[3].movementHistory[this.indexMovementHistory].x == this.game.objects[3].movementHistory[this.indexMovementHistory + 1].x
+                        && this.game.objects[3].movementHistory[this.indexMovementHistory].y == this.game.objects[3].movementHistory[this.indexMovementHistory + 1].y)) {
+                        this.indexMovementHistory++;
+
+                    }
+                }
             }
         }
+        else this.gameOver;
     }
 
     move(dt) {
@@ -185,6 +157,7 @@ class Ghost extends BaseObject {
         }
 
     }
+
     update(dt) {
         this.move(dt);
     }
@@ -192,7 +165,7 @@ class Ghost extends BaseObject {
     render(ctx) {
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.drawImage(this.image, 0, 0, 20, 20);
+        ctx.drawImage(this.image, 0, 0, quant, quant);
         ctx.restore();
     }
 }

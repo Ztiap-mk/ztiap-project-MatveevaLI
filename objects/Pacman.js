@@ -25,8 +25,7 @@ class Pacman extends BaseObject {
         this.grid = game.grid;
         this.counter = 0;
         this.currentFrameHeight = 1;
-        this.score = 0;
-
+         
         this.movementHistory = [];
         this.trackMovement = false;
     }
@@ -34,21 +33,40 @@ class Pacman extends BaseObject {
     handleMovement(pacman, newCoordinate) {
         pacman.currentCoordinate = newCoordinate;
     }
-
+    
+    nextLevel () {
+        if (lastLevel == true) {
+            this.game.stateManager.changeState(StateManager.STATES.GAMEEND);
+        }
+        else {
+            this.game.stateManager.changeState(StateManager.STATES.NEXTLEVEL);
+        } 
+    }
     handleFood(newCoordinate) {
         if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.Food) {
-            this.score += 10;
+        console.log(`type before: ` + this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type);
+           score += 10;
+           foodLeft--;
         }
         else if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.BigFood) {
-            this.score += 100;
+        console.log(`type before: ` + this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type);
+           score += 100;
+           foodLeft--;
         }
         else if (this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type == Coordinate.CoordinateType.Cherry){
-            this.score += 1000;
+            score += 1000;
         }
-
+        console.log('Food left after eating: ' + foodLeft);
+    
         this.foodEatenSound.play();
         this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type = Coordinate.CoordinateType.Empty;
+
         this.game.calculateLabyrinthPath();
+
+        console.log(`type after: ` + this.grid.CurrentLevel[newCoordinate.cellY][newCoordinate.cellX].type);
+        if (foodLeft == 0) {
+            this.nextLevel();
+        } 
     }
 
     move(dt) {
@@ -59,25 +77,30 @@ class Pacman extends BaseObject {
         }
 
         let deltaX = this.currentCoordinate.pxX;
+        
         let deltaY = this.currentCoordinate.pxY;
+       
+         
+        
         let newCoordinate = null;
-
-        if (keys["ArrowLeft"]) { deltaX -= 3; }
-        if (keys["ArrowRight"]) { deltaX += quant + 3; deltaY += quant; }
-        if (keys["ArrowUp"]) { deltaY -= 3; deltaX += quant; }
-        if (keys["ArrowDown"]) { deltaY += quant + 3; deltaX += quant; }
+        
+        if (keys["ArrowLeft"]) { deltaX += -2;   }
+        if (keys["ArrowRight"]) { deltaX += quant + 1; deltaY += quant;   }
+        if (keys["ArrowUp"]) { deltaY -= 1; deltaX += quant; }
+        if (keys["ArrowDown"]) { deltaY += quant + 1; deltaX += quant; }
 
         newCoordinate = this.grid.getCoordinateFromPX(deltaX, deltaY);
 
         // Cancel Collision 
+    
         if (keys["ArrowRight"]) { newCoordinate.pxX -= quant; newCoordinate.pxY -= quant; }
         if (keys["ArrowUp"]) { newCoordinate.pxX -= quant; }
         if (keys["ArrowDown"]) { newCoordinate.pxX -= quant; newCoordinate.pxY -= quant; }
-
+        
         if (newCoordinate) {
 
             switch (newCoordinate.type) {
-                case Coordinate.CoordinateType.Empty: this.handleMovement(this, newCoordinate);
+                case Coordinate.CoordinateType.Empty: this.handleMovement(this, newCoordinate);break;
                 case Coordinate.CoordinateType.Wall: break;
                 case Coordinate.CoordinateType.Food: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
                 case Coordinate.CoordinateType.BigFood: this.handleFood(newCoordinate); this.handleMovement(this, newCoordinate); break;
@@ -130,7 +153,7 @@ class Pacman extends BaseObject {
 
         ctx.font = `20px Verdana`;
         ctx.fillStyle = 'black';
-        ctx.fillText("Score " + this.score, canvas.width * 0.47, canvas.height * 0.97);
+        ctx.fillText("Score " + score, canvas.width * 0.47, canvas.height * 0.97);
         ctx.restore();
     }
 }
